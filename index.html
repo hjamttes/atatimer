@@ -23,494 +23,257 @@
     --accent: #FFD700;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
   html, body {
-    height: 100%;
-    overflow: hidden;
-    background: var(--black);
-    font-family: 'Barlow Condensed', sans-serif;
-    user-select: none;
-    touch-action: manipulation;
+    height:100%; overflow:hidden;
+    background:var(--black);
+    font-family:'Barlow Condensed',sans-serif;
+    user-select:none; touch-action:manipulation;
   }
 
-  #shell {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    height: 100dvh;
-  }
+  #shell { display:flex; flex-direction:column; height:100vh; height:100dvh; }
 
   /* ── HEADER ── */
   #header {
-    background: var(--gray);
-    border-bottom: 4px solid var(--accent);
-    padding: 8px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-    gap: 8px;
+    background:var(--gray); border-bottom:4px solid var(--accent);
+    padding:8px 14px; display:flex; align-items:center;
+    justify-content:space-between; flex-shrink:0; gap:8px;
   }
-  #header h1 {
-    font-family: 'Black Ops One', cursive;
-    font-size: clamp(1.1rem, 3vw, 1.8rem);
-    color: var(--white);
-    letter-spacing: 4px;
-  }
-  #header h1 span { color: var(--accent); }
-
-  .header-controls { display: flex; align-items: center; gap: 8px; }
-
-  .mode-switch { display: flex; border: 3px solid var(--accent); }
+  #header h1 { font-family:'Black Ops One',cursive; font-size:clamp(1.1rem,3vw,1.8rem); color:var(--white); letter-spacing:4px; }
+  #header h1 span { color:var(--accent); }
+  .header-controls { display:flex; align-items:center; gap:8px; }
+  .mode-switch { display:flex; border:3px solid var(--accent); }
   .mode-btn {
-    background: transparent;
-    border: none;
-    color: var(--white-dark);
-    font-family: 'Oswald', sans-serif;
-    font-size: clamp(0.7rem, 1.8vw, 0.95rem);
-    font-weight: 700;
-    letter-spacing: 2px;
-    padding: 8px 18px;
-    cursor: pointer;
-    text-transform: uppercase;
-    min-height: 48px;
+    background:transparent; border:none; color:var(--white-dark);
+    font-family:'Oswald',sans-serif; font-size:clamp(0.7rem,1.8vw,0.95rem);
+    font-weight:700; letter-spacing:2px; padding:8px 18px;
+    cursor:pointer; text-transform:uppercase; min-height:48px;
   }
-  .mode-btn.active { background: var(--accent); color: var(--black); }
-  .mode-btn:active { filter: brightness(0.85); }
+  .mode-btn.active { background:var(--accent); color:var(--black); }
+  .mode-btn:active { filter:brightness(0.85); }
 
-  /* RESET ALL button */
   #btn-reset-all {
-    background: #3a0000;
-    border: 2px solid #660000;
-    color: #ff6666;
-    font-family: 'Oswald', sans-serif;
-    font-size: clamp(0.65rem, 1.6vw, 0.85rem);
-    font-weight: 700;
-    letter-spacing: 2px;
-    padding: 8px 14px;
-    cursor: pointer;
-    text-transform: uppercase;
-    min-height: 48px;
-    white-space: nowrap;
+    background:#3a0000; border:2px solid #660000; color:#ff6666;
+    font-family:'Oswald',sans-serif; font-size:clamp(0.6rem,1.5vw,0.82rem);
+    font-weight:700; letter-spacing:2px; padding:8px 12px;
+    cursor:pointer; text-transform:uppercase; min-height:48px; white-space:nowrap;
   }
-  #btn-reset-all:active { filter: brightness(1.3); }
+  #btn-reset-all:active { filter:brightness(1.3); }
 
   /* ── MATCH BAR ── */
   #match-bar {
-    background: var(--gray2);
-    border-bottom: 3px solid var(--gray3);
-    padding: 6px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-    flex-wrap: wrap;
-    gap: 6px;
+    background:var(--gray2); border-bottom:3px solid var(--gray3);
+    padding:6px 14px; display:flex; align-items:center;
+    justify-content:space-between; flex-shrink:0; flex-wrap:wrap; gap:6px;
   }
-  #match-bar.hidden { display: none; }
-  .mb-group { display: flex; align-items: center; gap: 18px; }
-  .mb-item { text-align: center; }
-  .mb-label {
-    font-family: 'Oswald', sans-serif;
-    font-size: clamp(0.55rem, 1.3vw, 0.7rem);
-    letter-spacing: 3px;
-    color: #666;
-    text-transform: uppercase;
-    display: block;
-  }
-  /* Editable match number */
-  .mb-value {
-    font-family: 'Black Ops One', cursive;
-    font-size: clamp(1.1rem, 2.8vw, 1.7rem);
-    color: var(--accent);
-    line-height: 1;
-  }
+  #match-bar.hidden { display:none; }
+  .mb-group { display:flex; align-items:center; gap:16px; }
+  .mb-item { text-align:center; }
+  .mb-label { font-family:'Oswald',sans-serif; font-size:clamp(0.55rem,1.3vw,0.7rem); letter-spacing:3px; color:#666; text-transform:uppercase; display:block; }
+  .mb-value { font-family:'Black Ops One',cursive; font-size:clamp(1.1rem,2.8vw,1.7rem); color:var(--accent); line-height:1; }
   #match-num-input {
-    font-family: 'Black Ops One', cursive;
-    font-size: clamp(1.1rem, 2.8vw, 1.7rem);
-    color: var(--accent);
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid #555;
-    width: 2.4ch;
-    text-align: center;
-    -moz-appearance: textfield;
-    padding: 0;
-    line-height: 1;
+    font-family:'Black Ops One',cursive; font-size:clamp(1.1rem,2.8vw,1.7rem);
+    color:var(--accent); background:transparent; border:none;
+    border-bottom:2px solid #555; width:2.4ch; text-align:center;
+    -moz-appearance:textfield; padding:0; line-height:1;
   }
   #match-num-input::-webkit-inner-spin-button,
-  #match-num-input::-webkit-outer-spin-button { -webkit-appearance: none; }
-  #match-num-input:focus { outline: none; border-bottom-color: var(--accent); }
+  #match-num-input::-webkit-outer-spin-button { -webkit-appearance:none; }
+  #match-num-input:focus { outline:none; border-bottom-color:var(--accent); }
 
+  .mb-actions { display:flex; gap:6px; }
   #btn-next-match {
-    background: var(--accent);
-    border: none;
-    color: var(--black);
-    font-family: 'Oswald', sans-serif;
-    font-size: clamp(0.65rem, 1.8vw, 0.9rem);
-    font-weight: 700;
-    letter-spacing: 2px;
-    padding: 8px 20px;
-    cursor: pointer;
-    text-transform: uppercase;
-    min-height: 48px;
-    min-width: 130px;
+    background:var(--accent); border:none; color:var(--black);
+    font-family:'Oswald',sans-serif; font-size:clamp(0.62rem,1.7vw,0.88rem);
+    font-weight:700; letter-spacing:2px; padding:8px 16px;
+    cursor:pointer; text-transform:uppercase; min-height:48px; min-width:120px;
   }
-  #btn-next-match:active { filter: brightness(0.82); }
+  #btn-next-match:active { filter:brightness(0.82); }
+  #btn-edit-match {
+    background:#1a2a00; border:2px solid #3a5500; color:#aadd44;
+    font-family:'Oswald',sans-serif; font-size:clamp(0.62rem,1.7vw,0.88rem);
+    font-weight:700; letter-spacing:2px; padding:8px 14px;
+    cursor:pointer; text-transform:uppercase; min-height:48px; white-space:nowrap;
+  }
+  #btn-edit-match:active { filter:brightness(1.3); }
+  #btn-edit-match.no-history { opacity:0.35; pointer-events:none; }
 
   /* ── MAIN GRID ── */
-  #main {
-    display: grid;
-    grid-template-columns: 1fr 210px 1fr;
-    flex: 1;
-    overflow: hidden;
-  }
+  #main { display:grid; grid-template-columns:1fr 210px 1fr; flex:1; overflow:hidden; }
 
   /* ── TEAM PANELS ── */
-  .team-panel {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
+  .team-panel { display:flex; flex-direction:column; overflow:hidden; }
   .team-banner {
-    font-family: 'Black Ops One', cursive;
-    font-size: clamp(1.8rem, 4.5vw, 3.2rem);
-    letter-spacing: 8px;
-    text-align: center;
-    padding: 12px 0 8px;
-    flex-shrink: 0;
-    clip-path: polygon(0 0, 100% 0, 94% 100%, 6% 100%);
+    font-family:'Black Ops One',cursive; font-size:clamp(1.8rem,4.5vw,3.2rem);
+    letter-spacing:8px; text-align:center; padding:12px 0 8px; flex-shrink:0;
+    clip-path:polygon(0 0,100% 0,94% 100%,6% 100%);
   }
-  .white-banner { background: var(--white); color: var(--black); }
-  .red-banner   { background: var(--red);   color: var(--white); }
+  .white-banner { background:var(--white); color:var(--black); }
+  .red-banner   { background:var(--red);   color:var(--white); }
+  .team-body { display:flex; flex-direction:column; flex:1; padding:10px; gap:8px; overflow:hidden; }
 
-  .team-body {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    padding: 10px;
-    gap: 8px;
-    overflow: hidden;
-  }
-
-  /* Both score blocks take equal space — flex:1 on each */
   .score-block {
-    background: var(--gray);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 8px 8px 6px;
-    flex: 1;          /* match block */
-    overflow: hidden;
-    min-height: 0;
+    background:var(--gray); display:flex; flex-direction:column;
+    align-items:center; padding:8px 8px 6px; flex:1; overflow:hidden; min-height:0;
   }
   .cum-block {
-    background: var(--gray2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 8px;
-    flex: 1;          /* same as score-block so they're equal height */
-    min-height: 0;
-    overflow: hidden;
+    background:var(--gray2); display:flex; flex-direction:column;
+    align-items:center; padding:8px; flex:1; min-height:0; overflow:hidden;
   }
-  .score-block.wb { border: 3px solid var(--white-dark); }
-  .score-block.rb { border: 3px solid var(--red-dark); }
-  .cum-block.wb   { border: 3px solid var(--white-dark); }
-  .cum-block.rb   { border: 3px solid var(--red-dark); }
-  .cum-block.hidden { display: none; }
+  .score-block.wb { border:3px solid var(--white-dark); }
+  .score-block.rb { border:3px solid var(--red-dark); }
+  .cum-block.wb   { border:3px solid var(--white-dark); }
+  .cum-block.rb   { border:3px solid var(--red-dark); }
+  .cum-block.hidden { display:none; }
 
-  .score-lbl {
-    font-family: 'Oswald', sans-serif;
-    font-size: clamp(0.55rem, 1.3vw, 0.7rem);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: #666;
-    margin-bottom: 2px;
-    flex-shrink: 0;
-  }
+  .score-lbl { font-family:'Oswald',sans-serif; font-size:clamp(0.55rem,1.3vw,0.7rem); letter-spacing:3px; text-transform:uppercase; color:#666; margin-bottom:2px; flex-shrink:0; }
+  .score-num { font-family:'Black Ops One',cursive; font-size:clamp(3.5rem,11vw,8rem); line-height:1; flex:1; display:flex; align-items:center; justify-content:center; min-height:0; }
+  .cum-num   { font-family:'Black Ops One',cursive; font-size:clamp(3.5rem,11vw,8rem); line-height:1; flex:1; display:flex; align-items:center; justify-content:center; min-height:0; }
+  .wn { color:var(--white); }
+  .rn { color:var(--red-light); }
 
-  /* Score number fills available vertical space */
-  .score-num {
-    font-family: 'Black Ops One', cursive;
-    font-size: clamp(3.5rem, 11vw, 8rem);
-    line-height: 1;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 0;
-  }
-  .cum-num {
-    font-family: 'Black Ops One', cursive;
-    font-size: clamp(3.5rem, 11vw, 8rem);
-    line-height: 1;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 0;
-  }
-  .wn { color: var(--white); }
-  .rn { color: var(--red-light); }
+  .score-btns { display:grid; grid-template-columns:1fr 1fr; gap:6px; width:100%; flex-shrink:0; }
+  .sbtn { font-family:'Black Ops One',cursive; font-size:clamp(1.8rem,4vw,2.8rem); border:none; cursor:pointer; padding:12px 0; line-height:1; min-height:62px; }
+  .sbtn:active { filter:brightness(0.7); transform:scale(0.95); }
+  .pw { background:var(--white);    color:var(--black); }
+  .mw { background:#777;            color:var(--black); }
+  .pr { background:var(--red);      color:var(--white); }
+  .mr { background:var(--red-dark); color:#ddd; }
 
-  .score-btns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    width: 100%;
-    flex-shrink: 0;
-  }
-  .sbtn {
-    font-family: 'Black Ops One', cursive;
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    border: none;
-    cursor: pointer;
-    padding: 12px 0;
-    line-height: 1;
-    min-height: 62px;
-  }
-  .sbtn:active { filter: brightness(0.7); transform: scale(0.95); }
-
-  /* White: + outside (left), − inside (right) */
-  .pw { background: var(--white);    color: var(--black); }
-  .mw { background: #777;            color: var(--black); }
-  /* Red:   + outside (right), − inside (left) */
-  .pr { background: var(--red);      color: var(--white); }
-  .mr { background: var(--red-dark); color: #ddd; }
-
-  /* ── CENTER ── */
+  /* ── CENTER PANEL ── */
   #center-panel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 8px;
-    gap: 8px;
-    background: var(--gray);
-    border-left: 3px solid var(--gray3);
-    border-right: 3px solid var(--gray3);
-    overflow: hidden;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:12px 8px; gap:8px; background:var(--gray);
+    border-left:3px solid var(--gray3); border-right:3px solid var(--gray3); overflow:hidden;
   }
-
   #timer-display {
-    background: var(--black);
-    border: 4px solid var(--accent);
-    padding: 12px 8px 6px;
-    text-align: center;
-    width: 100%;
-    cursor: pointer;
-    position: relative;
+    background:var(--black); border:4px solid var(--accent);
+    padding:12px 8px 6px; text-align:center; width:100%; cursor:pointer; position:relative;
   }
-  #timer-hint {
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.5rem;
-    letter-spacing: 2px;
-    color: #3a3a3a;
-    text-transform: uppercase;
-    position: absolute;
-    top: 3px;
-    right: 5px;
-  }
-  #timer-text {
-    font-family: 'Black Ops One', cursive;
-    font-size: clamp(2.6rem, 7.5vw, 4.8rem);
-    color: var(--accent);
-    letter-spacing: 4px;
-    line-height: 1;
-    display: block;
-    transition: color 0.25s;
-  }
-  #timer-text.warning { color: #FF8800; }
-  #timer-text.danger  { color: var(--red-light); animation: blink 0.45s infinite; }
+  #timer-hint { font-family:'Oswald',sans-serif; font-size:0.5rem; letter-spacing:2px; color:#3a3a3a; text-transform:uppercase; position:absolute; top:3px; right:5px; }
+  #timer-text { font-family:'Black Ops One',cursive; font-size:clamp(2.6rem,7.5vw,4.8rem); color:var(--accent); letter-spacing:4px; line-height:1; display:block; transition:color 0.25s; }
+  #timer-text.warning { color:#FF8800; }
+  #timer-text.danger  { color:var(--red-light); animation:blink 0.45s infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-  #timer-sub {
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.55rem;
-    letter-spacing: 3px;
-    color: #444;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
+  #timer-sub { font-family:'Oswald',sans-serif; font-size:0.55rem; letter-spacing:3px; color:#444; text-transform:uppercase; margin-top:2px; }
 
-  .presets {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5px;
-    width: 100%;
-  }
+  .presets { display:grid; grid-template-columns:1fr 1fr; gap:5px; width:100%; }
   .preset-btn {
-    background: var(--gray2);
-    border: 2px solid var(--gray3);
-    color: var(--white-dark);
-    font-family: 'Oswald', sans-serif;
-    font-size: clamp(0.7rem, 1.8vw, 0.95rem);
-    font-weight: 700;
-    letter-spacing: 1px;
-    padding: 9px 4px;
-    cursor: pointer;
-    text-align: center;
-    text-transform: uppercase;
-    min-height: 48px;
+    background:var(--gray2); border:2px solid var(--gray3); color:var(--white-dark);
+    font-family:'Oswald',sans-serif; font-size:clamp(0.7rem,1.8vw,0.95rem);
+    font-weight:700; letter-spacing:1px; padding:9px 4px; cursor:pointer;
+    text-align:center; text-transform:uppercase; min-height:48px;
   }
-  .preset-btn.sel { background: var(--accent); color: var(--black); border-color: var(--accent); }
-  .preset-btn:active { filter: brightness(0.8); }
+  .preset-btn.sel { background:var(--accent); color:var(--black); border-color:var(--accent); }
+  .preset-btn:active { filter:brightness(0.8); }
 
   #btn-start {
-    background: #004d00;
-    border: none;
-    color: #00DD55;
-    font-family: 'Black Ops One', cursive;
-    font-size: clamp(0.95rem, 2.3vw, 1.3rem);
-    letter-spacing: 3px;
-    padding: 14px;
-    width: 100%;
-    cursor: pointer;
-    text-transform: uppercase;
-    min-height: 58px;
+    background:#004d00; border:none; color:#00DD55;
+    font-family:'Black Ops One',cursive; font-size:clamp(0.95rem,2.3vw,1.3rem);
+    letter-spacing:3px; padding:14px; width:100%; cursor:pointer; text-transform:uppercase; min-height:58px;
   }
-  #btn-start.running { background: #5c2900; color: #FFAA33; }
-  #btn-start:active  { filter: brightness(0.78); }
+  #btn-start.running { background:#5c2900; color:#FFAA33; }
+  #btn-start:active  { filter:brightness(0.78); }
 
   #btn-reset-timer {
-    background: var(--gray2);
-    border: 2px solid var(--gray3);
-    color: #666;
-    font-family: 'Oswald', sans-serif;
-    font-size: clamp(0.65rem, 1.7vw, 0.85rem);
-    font-weight: 700;
-    letter-spacing: 2px;
-    padding: 9px;
-    width: 100%;
-    cursor: pointer;
-    text-transform: uppercase;
-    min-height: 46px;
+    background:var(--gray2); border:2px solid var(--gray3); color:#666;
+    font-family:'Oswald',sans-serif; font-size:clamp(0.65rem,1.7vw,0.85rem);
+    font-weight:700; letter-spacing:2px; padding:9px; width:100%;
+    cursor:pointer; text-transform:uppercase; min-height:46px;
   }
-  #btn-reset-timer:active { border-color: var(--red-light); color: var(--red-light); }
+  #btn-reset-timer:active { border-color:var(--red-light); color:var(--red-light); }
 
-  /* ── CUSTOM TIME MODAL ── */
-  #time-modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.88);
-    z-index: 50;
-    align-items: center;
-    justify-content: center;
+  /* ── SHARED MODAL OVERLAY ── */
+  .overlay-modal {
+    display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,0.9); z-index:50;
+    align-items:center; justify-content:center;
   }
-  #time-modal.show { display: flex; }
-  #modal-box {
-    background: var(--gray);
-    border: 4px solid var(--accent);
-    padding: 28px 36px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-    min-width: 290px;
-  }
-  #modal-box h3 {
-    font-family: 'Black Ops One', cursive;
-    font-size: 1.3rem;
-    letter-spacing: 4px;
-    color: var(--accent);
-    text-transform: uppercase;
-  }
-  .time-row { display: flex; align-items: center; gap: 10px; }
-  .time-row span {
-    font-family: 'Black Ops One', cursive;
-    font-size: 2.8rem;
-    color: var(--white);
-  }
-  .tfield {
-    background: var(--black);
-    border: 3px solid var(--gray3);
-    color: var(--white);
-    font-family: 'Black Ops One', cursive;
-    font-size: 3rem;
-    width: 88px;
-    text-align: center;
-    padding: 8px 4px;
-    -moz-appearance: textfield;
-  }
-  .tfield::-webkit-inner-spin-button,
-  .tfield::-webkit-outer-spin-button { -webkit-appearance: none; }
-  .tfield:focus { outline: none; border-color: var(--accent); }
-  .modal-row { display: flex; gap: 10px; width: 100%; }
+  .overlay-modal.show { display:flex; }
+  .modal-row { display:flex; gap:10px; width:100%; }
   .mbtn {
-    flex: 1;
-    font-family: 'Oswald', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    padding: 14px;
-    border: none;
-    cursor: pointer;
-    text-transform: uppercase;
-    min-height: 54px;
+    flex:1; font-family:'Oswald',sans-serif; font-size:1rem; font-weight:700;
+    letter-spacing:2px; padding:14px; border:none; cursor:pointer;
+    text-transform:uppercase; min-height:54px;
   }
-  .mbtn-ok     { background: var(--accent); color: var(--black); }
-  .mbtn-cancel { background: var(--gray2); color: #777; border: 2px solid var(--gray3); }
-  .mbtn:active { filter: brightness(0.82); }
+  .mbtn-ok     { background:var(--accent); color:var(--black); }
+  .mbtn-cancel { background:var(--gray2); color:#777; border:2px solid var(--gray3); }
+  .mbtn:active { filter:brightness(0.82); }
+
+  /* ── NUMPAD TIME MODAL ── */
+  #time-modal-box {
+    background:var(--gray); border:4px solid var(--accent);
+    padding:18px; display:flex; flex-direction:column;
+    align-items:center; gap:12px; width:320px; max-width:96vw;
+  }
+  #time-modal-box h3 { font-family:'Black Ops One',cursive; font-size:1.15rem; letter-spacing:4px; color:var(--accent); text-transform:uppercase; align-self:flex-start; }
+  #np-display {
+    background:var(--black); border:3px solid var(--accent); width:100%;
+    padding:8px 14px; display:flex; align-items:baseline;
+    justify-content:center; gap:2px;
+  }
+  #np-min, #np-sec {
+    font-family:'Black Ops One',cursive; font-size:3.2rem;
+    color:var(--accent); letter-spacing:2px; line-height:1;
+  }
+  #np-colon { font-family:'Black Ops One',cursive; font-size:2.8rem; color:#555; margin:0 3px; line-height:1; }
+  #np-hint { font-family:'Oswald',sans-serif; font-size:0.58rem; letter-spacing:2px; color:#444; text-transform:uppercase; align-self:flex-start; }
+  .numpad { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; width:100%; }
+  .np-btn {
+    font-family:'Black Ops One',cursive; font-size:1.8rem;
+    background:var(--gray2); border:3px solid var(--gray3); color:var(--white);
+    padding:0; cursor:pointer; text-align:center; line-height:1;
+    min-height:66px; display:flex; align-items:center; justify-content:center;
+  }
+  .np-btn:active { background:#3a3a3a; transform:scale(0.93); }
+  .np-btn.np-back { background:#3a1a00; border-color:#663300; color:#FF8844; font-size:1.5rem; }
+  .np-btn.np-clear { background:#3a0000; border-color:#660000; color:#ff6666; font-size:0.85rem; letter-spacing:1px; font-family:'Oswald',sans-serif; font-weight:700; }
+
+  /* ── EDIT LAST MATCH MODAL ── */
+  #edit-modal-box {
+    background:var(--gray); border:4px solid #FF8800;
+    padding:20px 22px; display:flex; flex-direction:column;
+    align-items:center; gap:14px; width:400px; max-width:96vw;
+  }
+  #edit-modal-box h3 { font-family:'Black Ops One',cursive; font-size:1.15rem; letter-spacing:3px; color:#FF8800; text-transform:uppercase; }
+  #edit-modal-box > p { font-family:'Oswald',sans-serif; font-size:0.7rem; letter-spacing:2px; color:#666; text-transform:uppercase; text-align:center; line-height:1.5; }
+  .edit-teams { display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%; }
+  .edit-team-col { display:flex; flex-direction:column; gap:8px; align-items:center; }
+  .edit-team-label { font-family:'Black Ops One',cursive; font-size:0.95rem; letter-spacing:3px; padding:6px 0; width:100%; text-align:center; clip-path:polygon(0 0,100% 0,94% 100%,6% 100%); }
+  .etw { background:var(--white); color:var(--black); }
+  .etr { background:var(--red);   color:var(--white); }
+  .edit-field-group { width:100%; display:flex; flex-direction:column; gap:3px; }
+  .edit-field-lbl { font-family:'Oswald',sans-serif; font-size:0.58rem; letter-spacing:3px; color:#666; text-transform:uppercase; }
+  .edit-row { display:flex; align-items:stretch; border:2px solid var(--gray3); background:var(--black); }
+  .edit-row button {
+    font-family:'Black Ops One',cursive; font-size:1.5rem;
+    background:var(--gray2); border:none; color:var(--white);
+    padding:6px 14px; cursor:pointer; min-height:52px; min-width:44px; line-height:1;
+  }
+  .edit-row button:active { filter:brightness(1.5); }
+  .edit-val { font-family:'Black Ops One',cursive; font-size:2rem; color:var(--white); flex:1; text-align:center; line-height:1; padding:6px 0; display:flex; align-items:center; justify-content:center; }
 
   /* ── CONFIRM RESET MODAL ── */
-  #confirm-modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.88);
-    z-index: 50;
-    align-items: center;
-    justify-content: center;
-  }
-  #confirm-modal.show { display: flex; }
   #confirm-box {
-    background: var(--gray);
-    border: 4px solid var(--red-light);
-    padding: 28px 36px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    min-width: 280px;
-    text-align: center;
+    background:var(--gray); border:4px solid var(--red-light);
+    padding:26px 32px; display:flex; flex-direction:column;
+    align-items:center; gap:14px; min-width:270px; text-align:center;
   }
-  #confirm-box h3 {
-    font-family: 'Black Ops One', cursive;
-    font-size: 1.3rem;
-    letter-spacing: 3px;
-    color: var(--red-light);
-    text-transform: uppercase;
-  }
-  #confirm-box p {
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.85rem;
-    letter-spacing: 2px;
-    color: #888;
-    text-transform: uppercase;
-  }
+  #confirm-box h3 { font-family:'Black Ops One',cursive; font-size:1.2rem; letter-spacing:3px; color:var(--red-light); text-transform:uppercase; }
+  #confirm-box p { font-family:'Oswald',sans-serif; font-size:0.82rem; letter-spacing:2px; color:#888; text-transform:uppercase; }
 
   /* ── FLASH ── */
-  #flash {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 99;
-    opacity: 0;
-    transition: opacity 0.07s;
-  }
-  #flash.rf { background: var(--red); opacity: 0.18; }
-  #flash.wf { background: #fff;       opacity: 0.13; }
+  #flash { position:fixed; inset:0; pointer-events:none; z-index:99; opacity:0; transition:opacity 0.07s; }
+  #flash.rf { background:var(--red); opacity:0.18; }
+  #flash.wf { background:#fff;       opacity:0.13; }
 
-  /* Landscape tablet optimization */
-  @media (min-width: 768px) and (orientation: landscape) {
-    #main { grid-template-columns: 1fr 230px 1fr; }
-    .sbtn { min-height: 74px; }
+  @media (min-width:768px) and (orientation:landscape) {
+    #main { grid-template-columns:1fr 230px 1fr; }
+    .sbtn { min-height:74px; }
   }
-  @media (min-width: 1024px) and (orientation: landscape) {
-    #main { grid-template-columns: 1fr 250px 1fr; }
+  @media (min-width:1024px) and (orientation:landscape) {
+    #main { grid-template-columns:1fr 250px 1fr; }
   }
 </style>
 </head>
@@ -518,14 +281,27 @@
 
 <div id="flash"></div>
 
-<!-- CUSTOM TIME MODAL -->
-<div id="time-modal">
-  <div id="modal-box">
-    <h3>Custom Time</h3>
-    <div class="time-row">
-      <input class="tfield" id="cm" type="number" min="0" max="9" value="1" inputmode="numeric">
-      <span>:</span>
-      <input class="tfield" id="cs" type="number" min="0" max="59" value="0" inputmode="numeric">
+<!-- ── NUMPAD TIME MODAL ── -->
+<div id="time-modal" class="overlay-modal">
+  <div id="time-modal-box">
+    <h3>Set Timer</h3>
+    <div id="np-display">
+      <span id="np-min">1</span><span id="np-colon">:</span><span id="np-sec">00</span>
+    </div>
+    <div id="np-hint">Minutes : Seconds (max 9:59)</div>
+    <div class="numpad">
+      <button class="np-btn" onclick="npDigit(1)">1</button>
+      <button class="np-btn" onclick="npDigit(2)">2</button>
+      <button class="np-btn" onclick="npDigit(3)">3</button>
+      <button class="np-btn" onclick="npDigit(4)">4</button>
+      <button class="np-btn" onclick="npDigit(5)">5</button>
+      <button class="np-btn" onclick="npDigit(6)">6</button>
+      <button class="np-btn" onclick="npDigit(7)">7</button>
+      <button class="np-btn" onclick="npDigit(8)">8</button>
+      <button class="np-btn" onclick="npDigit(9)">9</button>
+      <button class="np-btn np-clear" onclick="npClear()">CLR</button>
+      <button class="np-btn" onclick="npDigit(0)">0</button>
+      <button class="np-btn np-back" onclick="npBack()">⌫</button>
     </div>
     <div class="modal-row">
       <button class="mbtn mbtn-cancel" onclick="closeTimeModal()">Cancel</button>
@@ -534,8 +310,60 @@
   </div>
 </div>
 
-<!-- CONFIRM RESET MODAL -->
-<div id="confirm-modal">
+<!-- ── EDIT LAST MATCH MODAL ── -->
+<div id="edit-modal" class="overlay-modal">
+  <div id="edit-modal-box">
+    <h3>Edit Last Match</h3>
+    <p>Adjust scores from the previous match.<br>Win counts will update automatically.</p>
+    <div class="edit-teams">
+      <div class="edit-team-col">
+        <div class="edit-team-label etw">WHITE</div>
+        <div class="edit-field-group">
+          <div class="edit-field-lbl">Match Pts</div>
+          <div class="edit-row">
+            <button onclick="editAdj('white','m',-1)">−</button>
+            <div class="edit-val wn" id="edit-white-m">0</div>
+            <button onclick="editAdj('white','m',1)">+</button>
+          </div>
+        </div>
+        <div class="edit-field-group" id="edit-cum-white-group">
+          <div class="edit-field-lbl">Cumulative</div>
+          <div class="edit-row">
+            <button onclick="editAdj('white','c',-1)">−</button>
+            <div class="edit-val wn" id="edit-white-c">0</div>
+            <button onclick="editAdj('white','c',1)">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="edit-team-col">
+        <div class="edit-team-label etr">RED</div>
+        <div class="edit-field-group">
+          <div class="edit-field-lbl">Match Pts</div>
+          <div class="edit-row">
+            <button onclick="editAdj('red','m',-1)">−</button>
+            <div class="edit-val rn" id="edit-red-m">0</div>
+            <button onclick="editAdj('red','m',1)">+</button>
+          </div>
+        </div>
+        <div class="edit-field-group" id="edit-cum-red-group">
+          <div class="edit-field-lbl">Cumulative</div>
+          <div class="edit-row">
+            <button onclick="editAdj('red','c',-1)">−</button>
+            <div class="edit-val rn" id="edit-red-c">0</div>
+            <button onclick="editAdj('red','c',1)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-row">
+      <button class="mbtn mbtn-cancel" onclick="closeEditModal()">Cancel</button>
+      <button class="mbtn mbtn-ok"     onclick="applyEdit()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CONFIRM RESET MODAL ── -->
+<div id="confirm-modal" class="overlay-modal">
   <div id="confirm-box">
     <h3>Reset Everything?</h3>
     <p>All scores, wins, and match<br>count will be cleared.</p>
@@ -565,7 +393,6 @@
     <div class="mb-group">
       <div class="mb-item">
         <span class="mb-label">Match</span>
-        <!-- Editable match number -->
         <input type="number" id="match-num-input" value="1" min="1" max="99" inputmode="numeric">
       </div>
       <div class="mb-item">
@@ -577,7 +404,10 @@
         <div class="mb-value" id="red-wins">0</div>
       </div>
     </div>
-    <button id="btn-next-match" onclick="nextMatch()">NEXT MATCH ▶</button>
+    <div class="mb-actions">
+      <button id="btn-edit-match" class="no-history" onclick="openEditModal()">✎ EDIT LAST</button>
+      <button id="btn-next-match" onclick="nextMatch()">NEXT MATCH ▶</button>
+    </div>
   </div>
 
   <!-- MAIN GRID -->
@@ -591,7 +421,6 @@
           <div class="score-lbl">Match Points</div>
           <div class="score-num wn" id="white-pts">0</div>
           <div class="score-btns">
-            <!-- White: + on outside (left), − on inside (right) -->
             <button class="sbtn pw" ontouchstart="" onclick="addPt('white')">+</button>
             <button class="sbtn mw" ontouchstart="" onclick="subPt('white')">−</button>
           </div>
@@ -610,14 +439,12 @@
         <span id="timer-text">1:00</span>
         <div id="timer-sub">ROUND TIMER</div>
       </div>
-
       <div class="presets">
         <button class="preset-btn sel" onclick="setPreset(60,this)">1:00</button>
         <button class="preset-btn"     onclick="setPreset(90,this)">1:30</button>
         <button class="preset-btn"     onclick="setPreset(105,this)">1:45</button>
         <button class="preset-btn"     onclick="setPreset(120,this)">2:00</button>
       </div>
-
       <button id="btn-start"       onclick="toggleTimer()">▶ START</button>
       <button id="btn-reset-timer" onclick="resetTimer()">↺ RESET TIMER</button>
     </div>
@@ -630,7 +457,6 @@
           <div class="score-lbl">Match Points</div>
           <div class="score-num rn" id="red-pts">0</div>
           <div class="score-btns">
-            <!-- Red: − on inside (left), + on outside (right) -->
             <button class="sbtn mr" ontouchstart="" onclick="subPt('red')">−</button>
             <button class="sbtn pr" ontouchstart="" onclick="addPt('red')">+</button>
           </div>
@@ -642,8 +468,8 @@
       </div>
     </div>
 
-  </div>
-</div>
+  </div><!-- /main -->
+</div><!-- /shell -->
 
 <script>
 // ── STATE ──────────────────────────────────────────────────────────
@@ -654,82 +480,68 @@ let scores = { white:{m:0,c:0}, red:{m:0,c:0} };
 let wins = {white:0, red:0};
 let audioCtx = null;
 
+// History snapshot of the last completed match (for "Edit Last")
+// { white:{m,c}, red:{m,c}, whiteWon: bool, redWon: bool, matchNumVal: number }
+let lastMatchSnap = null;
+// Working copy while edit modal is open
+let editDraft = null;
+
 // ── AUDIO ──────────────────────────────────────────────────────────
 function ctx() {
   if (!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
   return audioCtx;
 }
-
-function beep(freq=880, dur=0.15, vol=0.5, type='square') {
+function beep(freq=880,dur=0.15,vol=0.5,type='square') {
   try {
-    const c = ctx();
-    const o = c.createOscillator();
-    const g = c.createGain();
-    o.connect(g); g.connect(c.destination);
-    o.type = type; o.frequency.value = freq;
-    g.gain.setValueAtTime(vol, c.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + dur);
-    o.start(); o.stop(c.currentTime + dur);
-  } catch(e) {}
+    const c=ctx(),o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);
+    o.type=type;o.frequency.value=freq;
+    g.gain.setValueAtTime(vol,c.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+dur);
+    o.start();o.stop(c.currentTime+dur);
+  }catch(e){}
 }
-
-// End-of-round sound — plays sound/buzzer.mp3 from the repo
-// Falls back to sequential beeps if the file isn't available
-let buzzerAudio = null;
-function loadBuzzer() {
-  try {
-    buzzerAudio = new Audio('sound/buzzer.mp3');
-    buzzerAudio.preload = 'auto';
-  } catch(e) { buzzerAudio = null; }
+let buzzerAudio=null;
+function loadBuzzer(){
+  try{buzzerAudio=new Audio('sound/buzzer.mp3');buzzerAudio.preload='auto';}catch(e){buzzerAudio=null;}
 }
-
-function buzzer() {
-  if (buzzerAudio) {
-    try {
-      buzzerAudio.currentTime = 0;
-      buzzerAudio.play().catch(() => beepBuzzer());
-      return;
-    } catch(e) {}
-  }
+function buzzer(){
+  if(buzzerAudio){try{buzzerAudio.currentTime=0;buzzerAudio.play().catch(beepBuzzer);return;}catch(e){}}
   beepBuzzer();
 }
-
-function beepBuzzer() {
-  beep(160, 0.6, 0.7, 'sawtooth');
-  setTimeout(() => beep(140, 0.6, 0.7, 'sawtooth'), 650);
-  setTimeout(() => beep(120, 0.8, 0.7, 'sawtooth'), 1300);
+function beepBuzzer(){
+  beep(160,0.6,0.7,'sawtooth');
+  setTimeout(()=>beep(140,0.6,0.7,'sawtooth'),650);
+  setTimeout(()=>beep(120,0.8,0.7,'sawtooth'),1300);
 }
 
 // ── MODE ────────────────────────────────────────────────────────────
 function setMode(m) {
-  mode = m;
-  document.getElementById('btn-team').classList.toggle('active', m==='team');
-  document.getElementById('btn-ind').classList.toggle('active', m==='individual');
-  const team = m === 'team';
-  document.getElementById('match-bar').classList.toggle('hidden', !team);
-  document.getElementById('white-cum').classList.toggle('hidden', !team);
-  document.getElementById('red-cum').classList.toggle('hidden', !team);
-  doResetAll(true); // silent reset (no confirm) when switching modes
+  mode=m;
+  document.getElementById('btn-team').classList.toggle('active',m==='team');
+  document.getElementById('btn-ind').classList.toggle('active',m==='individual');
+  const team=m==='team';
+  document.getElementById('match-bar').classList.toggle('hidden',!team);
+  document.getElementById('white-cum').classList.toggle('hidden',!team);
+  document.getElementById('red-cum').classList.toggle('hidden',!team);
+  doResetAll(true);
 }
 
 // ── SCORING ─────────────────────────────────────────────────────────
 function addPt(t) {
   scores[t].m++;
-  if (mode === 'team') scores[t].c++;
-  render();
-  flash(t);
-  beep(t==='red' ? 580 : 920, 0.12, 0.5);
+  if(mode==='team') scores[t].c++;
+  render(); flash(t);
+  beep(t==='red'?580:920,0.12,0.5);
 }
-
 function subPt(t) {
-  if (scores[t].m > 0) {
+  if(scores[t].m>0){
     scores[t].m--;
-    if (mode === 'team') scores[t].c = Math.max(0, scores[t].c - 1);
+    if(mode==='team') scores[t].c=Math.max(0,scores[t].c-1);
   }
   render();
-  beep(160, 0.1, 0.3, 'sine');
+  beep(160,0.1,0.3,'sine');
 }
-
 function render() {
   document.getElementById('white-pts').textContent     = scores.white.m;
   document.getElementById('red-pts').textContent       = scores.red.m;
@@ -737,148 +549,242 @@ function render() {
   document.getElementById('red-cum-pts').textContent   = scores.red.c;
 }
 
-// ── NEXT MATCH — just advance, no popup ─────────────────────────────
+// ── NEXT MATCH ──────────────────────────────────────────────────────
 function nextMatch() {
-  ctx(); // unlock audio
-  let w = scores.red.m > scores.white.m ? 'red'
-        : scores.white.m > scores.red.m  ? 'white'
-        : null;
-  if (w) wins[w]++;
+  ctx();
+  const curMatchVal = parseInt(document.getElementById('match-num-input').value)||1;
 
-  // Advance match number (use the editable input value)
-  let cur = parseInt(document.getElementById('match-num-input').value) || 1;
-  document.getElementById('match-num-input').value = cur + 1;
+  // Determine winner
+  const whiteWon = scores.white.m > scores.red.m;
+  const redWon   = scores.red.m   > scores.white.m;
+  if (whiteWon) wins.white++;
+  if (redWon)   wins.red++;
+
+  // Save snapshot for "Edit Last" rollback
+  lastMatchSnap = {
+    white: {...scores.white},
+    red:   {...scores.red},
+    whiteWon, redWon,
+    matchNumVal: curMatchVal
+  };
+  document.getElementById('btn-edit-match').classList.remove('no-history');
+
+  // Advance
+  document.getElementById('match-num-input').value = curMatchVal + 1;
   document.getElementById('red-wins').textContent   = wins.red;
   document.getElementById('white-wins').textContent = wins.white;
-
-  scores.white.m = 0;
-  scores.red.m   = 0;
+  scores.white.m = 0; scores.red.m = 0;
   render();
   resetTimer();
-  beep(500, 0.12, 0.45);
+  beep(500,0.12,0.45);
 }
 
-// ── RESET ─────────────────────────────────────────────────────────
-function openConfirm() {
-  document.getElementById('confirm-modal').classList.add('show');
+// ── EDIT LAST MATCH ─────────────────────────────────────────────────
+function openEditModal() {
+  if (!lastMatchSnap) return;
+  // Seed draft from snapshot
+  editDraft = {
+    white: {...lastMatchSnap.white},
+    red:   {...lastMatchSnap.red}
+  };
+  const teamMode = mode === 'team';
+  document.getElementById('edit-cum-white-group').style.display = teamMode ? '' : 'none';
+  document.getElementById('edit-cum-red-group').style.display   = teamMode ? '' : 'none';
+  renderEditModal();
+  document.getElementById('edit-modal').classList.add('show');
 }
-function closeConfirm() {
-  document.getElementById('confirm-modal').classList.remove('show');
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.remove('show');
+  editDraft = null;
+}
+function editAdj(team, field, delta) {
+  editDraft[team][field] = Math.max(0, editDraft[team][field] + delta);
+  renderEditModal();
+  beep(delta>0?700:300,0.1,0.4);
+}
+function renderEditModal() {
+  document.getElementById('edit-white-m').textContent = editDraft.white.m;
+  document.getElementById('edit-red-m').textContent   = editDraft.red.m;
+  document.getElementById('edit-white-c').textContent = editDraft.white.c;
+  document.getElementById('edit-red-c').textContent   = editDraft.red.c;
+}
+function applyEdit() {
+  if (!lastMatchSnap || !editDraft) return;
+
+  // 1. Roll back the old win that was recorded for this match
+  if (lastMatchSnap.whiteWon) wins.white = Math.max(0, wins.white - 1);
+  if (lastMatchSnap.redWon)   wins.red   = Math.max(0, wins.red - 1);
+
+  // 2. In team mode, also roll back the cumulative delta from the old match
+  //    and apply the new cumulative values from the draft
+  if (mode === 'team') {
+    // Remove old match contribution from cumulative total
+    scores.white.c = Math.max(0, scores.white.c - lastMatchSnap.white.c + editDraft.white.c);
+    scores.red.c   = Math.max(0, scores.red.c   - lastMatchSnap.red.c   + editDraft.red.c);
+  }
+
+  // 3. Re-evaluate win for the edited match scores
+  const newWhiteWon = editDraft.white.m > editDraft.red.m;
+  const newRedWon   = editDraft.red.m   > editDraft.white.m;
+  if (newWhiteWon) wins.white++;
+  if (newRedWon)   wins.red++;
+
+  // 4. Update snapshot to reflect the edit (so a second edit works correctly)
+  lastMatchSnap = {
+    white: {...editDraft.white},
+    red:   {...editDraft.red},
+    whiteWon: newWhiteWon,
+    redWon:   newRedWon,
+    matchNumVal: lastMatchSnap.matchNumVal
+  };
+
+  // 5. Commit
+  document.getElementById('red-wins').textContent   = wins.red;
+  document.getElementById('white-wins').textContent = wins.white;
+  render();
+  closeEditModal();
+  beep(660,0.15,0.5);
 }
 
-// silent=true skips the confirm modal (used internally by setMode)
+// ── RESET ────────────────────────────────────────────────────────────
+function openConfirm()  { document.getElementById('confirm-modal').classList.add('show'); }
+function closeConfirm() { document.getElementById('confirm-modal').classList.remove('show'); }
 function doResetAll(silent) {
-  if (silent !== true) closeConfirm();
-  scores = { white:{m:0,c:0}, red:{m:0,c:0} };
-  wins   = { white:0, red:0 };
-  document.getElementById('match-num-input').value    = 1;
-  document.getElementById('red-wins').textContent     = 0;
-  document.getElementById('white-wins').textContent   = 0;
-  render();
-  resetTimer();
+  if(silent!==true) closeConfirm();
+  scores={white:{m:0,c:0},red:{m:0,c:0}};
+  wins={white:0,red:0};
+  lastMatchSnap=null;
+  document.getElementById('btn-edit-match').classList.add('no-history');
+  document.getElementById('match-num-input').value=1;
+  document.getElementById('red-wins').textContent=0;
+  document.getElementById('white-wins').textContent=0;
+  render(); resetTimer();
 }
 
-// ── TIMER ──────────────────────────────────────────────────────────
-function setPreset(s, btn) {
-  selTime = s; timeLeft = s;
-  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('sel'));
+// ── TIMER ────────────────────────────────────────────────────────────
+function setPreset(s,btn) {
+  selTime=s;timeLeft=s;
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
-  updateClock(); stopTimer();
-  document.getElementById('btn-start').textContent = '▶ START';
+  updateClock();stopTimer();
+  document.getElementById('btn-start').textContent='▶ START';
 }
-
 function toggleTimer() {
   ctx();
-  if (running) {
+  if(running){
     stopTimer();
-    document.getElementById('btn-start').textContent = '▶ RESUME';
-  } else {
-    if (timeLeft <= 0) { timeLeft = selTime; updateClock(); }
-    running = true;
-    document.getElementById('btn-start').textContent = '⏸ PAUSE';
+    document.getElementById('btn-start').textContent='▶ RESUME';
+  }else{
+    if(timeLeft<=0){timeLeft=selTime;updateClock();}
+    running=true;
+    document.getElementById('btn-start').textContent='⏸ PAUSE';
     document.getElementById('btn-start').classList.add('running');
-    beep(720, 0.1, 0.5);
-    interval = setInterval(tick, 1000);
+    beep(720,0.1,0.5);
+    interval=setInterval(tick,1000);
   }
 }
-
-function stopTimer() {
-  clearInterval(interval); running = false;
-  document.getElementById('btn-start').classList.remove('running');
+function stopTimer(){clearInterval(interval);running=false;document.getElementById('btn-start').classList.remove('running');}
+function resetTimer(){stopTimer();timeLeft=selTime;updateClock();document.getElementById('btn-start').textContent='▶ START';}
+function tick(){
+  timeLeft--;updateClock();
+  if(timeLeft===10) beep(920,0.14,0.6);
+  if(timeLeft>0&&timeLeft<=5) beep(1100,0.1,0.7);
+  if(timeLeft<=0){stopTimer();timeLeft=0;updateClock();document.getElementById('btn-start').textContent='▶ START';buzzer();}
+}
+function updateClock(){
+  const m=Math.floor(timeLeft/60),s=timeLeft%60;
+  const el=document.getElementById('timer-text');
+  el.textContent=m+':'+String(s).padStart(2,'0');
+  el.className='';
+  if(timeLeft<=5&&timeLeft>0) el.classList.add('danger');
+  else if(timeLeft<=15)       el.classList.add('warning');
 }
 
-function resetTimer() {
-  stopTimer(); timeLeft = selTime; updateClock();
-  document.getElementById('btn-start').textContent = '▶ START';
-}
+// ── NUMPAD TIME MODAL ─────────────────────────────────────────────
+// Stores up to 3 digits representing M, S tens, S units → e.g. [1,3,0] = 1:30
+let npDigits = [];
 
-function tick() {
-  timeLeft--;
-  updateClock();
-  if (timeLeft === 10) beep(920, 0.14, 0.6);
-  if (timeLeft > 0 && timeLeft <= 5) beep(1100, 0.1, 0.7);
-  if (timeLeft <= 0) {
-    stopTimer(); timeLeft = 0; updateClock();
-    document.getElementById('btn-start').textContent = '▶ START';
-    buzzer();
-  }
-}
-
-function updateClock() {
-  const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
-  const el = document.getElementById('timer-text');
-  el.textContent = m + ':' + String(s).padStart(2, '0');
-  el.className = '';
-  if (timeLeft <= 5 && timeLeft > 0) el.classList.add('danger');
-  else if (timeLeft <= 15)           el.classList.add('warning');
-}
-
-// ── CUSTOM TIME MODAL ─────────────────────────────────────────────
-function openTimeModal() {
-  if (running) return;
-  document.getElementById('cm').value = Math.floor(selTime / 60);
-  document.getElementById('cs').value = selTime % 60;
+function openTimeModal(){
+  if(running) return;
+  // Seed from current selTime
+  const m=Math.floor(selTime/60),s=selTime%60;
+  const st=Math.floor(s/10),su=s%10;
+  npDigits = m===0&&st===0&&su===0 ? [] : [m,st,su];
+  renderNP();
   document.getElementById('time-modal').classList.add('show');
-  setTimeout(() => document.getElementById('cm').focus(), 80);
 }
-function closeTimeModal() {
+function closeTimeModal(){
   document.getElementById('time-modal').classList.remove('show');
 }
-function applyTime() {
-  let m = parseInt(document.getElementById('cm').value) || 0;
-  let s = parseInt(document.getElementById('cs').value) || 0;
-  m = Math.min(9, Math.max(0, m));
-  s = Math.min(59, Math.max(0, s));
-  const total = m * 60 + s;
-  if (total < 5) { document.getElementById('cm').focus(); return; }
-  selTime = total; timeLeft = total;
-  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('sel'));
-  updateClock(); closeTimeModal();
+function npDigit(d){
+  if(npDigits.length>=3) return; // max 3 digits
+  // Prevent invalid seconds tens digit (max 5)
+  if(npDigits.length===1 && d>5) return;
+  npDigits.push(d);
+  renderNP();
+  beep(700,0.06,0.3,'sine');
 }
-document.getElementById('time-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeTimeModal();
-});
-document.getElementById('confirm-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeConfirm();
+function npBack(){
+  if(npDigits.length===0) return;
+  npDigits.pop();
+  renderNP();
+  beep(300,0.06,0.3,'sine');
+}
+function npClear(){
+  npDigits=[];
+  renderNP();
+  beep(200,0.08,0.3,'sine');
+}
+function renderNP(){
+  // Pad to always show 3 digits, filling from right
+  const padded=[0,0,0];
+  const offset=3-npDigits.length;
+  npDigits.forEach((v,i)=>padded[offset+i]=v);
+  document.getElementById('np-min').textContent = padded[0];
+  document.getElementById('np-sec').textContent = String(padded[1])+String(padded[2]);
+}
+function npToSeconds(){
+  const padded=[0,0,0];
+  const offset=3-npDigits.length;
+  npDigits.forEach((v,i)=>padded[offset+i]=v);
+  return padded[0]*60 + padded[1]*10 + padded[2];
+}
+function applyTime(){
+  const total=npToSeconds();
+  if(total<5){beep(200,0.1,0.5,'sine');return;}
+  selTime=total;timeLeft=total;
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('sel'));
+  updateClock();closeTimeModal();
+}
+
+// Close modals on backdrop tap
+['time-modal','edit-modal','confirm-modal'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',function(e){
+    if(e.target===this){
+      if(id==='time-modal') closeTimeModal();
+      else if(id==='edit-modal') closeEditModal();
+      else closeConfirm();
+    }
+  });
 });
 
-// ── FLASH ────────────────────────────────────────────────────────
-function flash(t) {
-  const f = document.getElementById('flash');
-  f.className = t === 'red' ? 'rf' : 'wf';
-  setTimeout(() => f.className = '', 170);
+// ── FLASH ────────────────────────────────────────────────────────────
+function flash(t){
+  const f=document.getElementById('flash');
+  f.className=t==='red'?'rf':'wf';
+  setTimeout(()=>f.className='',170);
 }
 
-// ── INIT ─────────────────────────────────────────────────────────
-function init() {
+// ── INIT ─────────────────────────────────────────────────────────────
+function init(){
   loadBuzzer();
   setMode('team');
   updateClock();
-  if ('wakeLock' in navigator) {
-    navigator.wakeLock.request('screen').catch(() => {});
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible')
-        navigator.wakeLock.request('screen').catch(() => {});
+  if('wakeLock' in navigator){
+    navigator.wakeLock.request('screen').catch(()=>{});
+    document.addEventListener('visibilitychange',()=>{
+      if(document.visibilityState==='visible')
+        navigator.wakeLock.request('screen').catch(()=>{});
     });
   }
 }
