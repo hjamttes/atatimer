@@ -730,10 +730,25 @@ function buzzer(){
   if(buzzerAudio){try{buzzerAudio.currentTime=0;buzzerAudio.play().catch(beepBuzzer);return;}catch(e){}}
   beepBuzzer();
 }
-function beepBuzzer(){
-  beep(160,0.6,0.7,'sawtooth');
-  setTimeout(()=>beep(140,0.6,0.7,'sawtooth'),650);
-  setTimeout(()=>beep(120,0.8,0.7,'sawtooth'),1300);
+function beepBuzzer() {
+  const duration = 2.0; // longer blast like real buzzer
+
+  // Base tone (harsh square wave works better than sawtooth)
+  beep(1000, duration, 0.9, 'square');
+
+  // Add a slight detuned layer for that "raspy" buzzer feel
+  setTimeout(() => beep(1020, duration, 0.6, 'square'), 0);
+
+  // Optional: subtle low-frequency wobble (simulates cheap arena buzzer)
+  let t = 0;
+  const interval = setInterval(() => {
+    const freq = 1000 + Math.sin(t) * 20; // tiny vibrato
+    beep(freq, 0.1, 0.4, 'square');
+    t += 0.5;
+  }, 100);
+
+  setTimeout(() => clearInterval(interval), duration * 1000);
+}
 }
 
 // ── MODE ────────────────────────────────────────────────────────────
