@@ -707,33 +707,57 @@ let audioCtx = null;
 let lastMatchSnap = null;
 let editDraft = null;
 
-// ── AUDIO ──────────────────────────────────────────────────────────
+// ── AUDIO (NO FILES) ───────────────────────────────────────────────
 function ctx() {
   if (!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
   return audioCtx;
 }
+
 function beep(freq=880,dur=0.15,vol=0.5,type='square') {
   try {
     const c=ctx(),o=c.createOscillator(),g=c.createGain();
     o.connect(g);g.connect(c.destination);
     o.type=type;o.frequency.value=freq;
+
     g.gain.setValueAtTime(vol,c.currentTime);
     g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+dur);
-    o.start();o.stop(c.currentTime+dur);
-  }catch(e){}
+
+    o.start();
+    o.stop(c.currentTime+dur);
+  } catch(e){}
 }
-let buzzerAudio=null;
-function loadBuzzer(){
-  try{buzzerAudio=new Audio('sound/buzzer.mp3');buzzerAudio.preload='auto';}catch(e){buzzerAudio=null;}
-}
-function buzzer(){
-  if(buzzerAudio){try{buzzerAudio.currentTime=0;buzzerAudio.play().catch(beepBuzzer);return;}catch(e){}}
-  beepBuzzer();
-}
-function beepBuzzer(){
-  beep(160,0.6,0.7,'sawtooth');
-  setTimeout(()=>beep(140,0.6,0.7,'sawtooth'),650);
-  setTimeout(()=>beep(120,0.8,0.7,'sawtooth'),1300);
+
+// 🔥 REAL BUZZER
+function buzzer() {
+  try {
+    const c = ctx();
+
+    function makeTone(freq) {
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(freq, c.currentTime);
+
+      // slight wobble = more realistic
+      osc.frequency.linearRampToValueAtTime(freq - 30, c.currentTime + 0.2);
+      osc.frequency.linearRampToValueAtTime(freq + 20, c.currentTime + 0.4);
+
+      gain.gain.setValueAtTime(0.7, c.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 2);
+
+      osc.connect(gain);
+      gain.connect(c.destination);
+
+      osc.start();
+      osc.stop(c.currentTime + 2);
+    }
+
+    // layered tones = thick buzzer sound
+    makeTone(950);
+    makeTone(1050);
+
+  } catch (e) {}
 }
 
 // ── MODE ────────────────────────────────────────────────────────────
@@ -791,68 +815,6 @@ function nextMatch() {
   beep(500,0.12,0.45);
 }
 
-// ── EDIT LAST MATCH ─────────────────────────────────────────────────
-function openEditModal() {
-  if (!lastMatchSnap) return;
-  editDraft = { white:{...lastMatchSnap.white}, red:{...lastMatchSnap.red} };
-  const teamMode = mode === 'team';
-  document.getElementById('edit-cum-white-group').style.display = teamMode ? '' : 'none';
-  document.getElementById('edit-cum-red-group').style.display   = teamMode ? '' : 'none';
-  renderEditModal();
-  document.getElementById('edit-modal').classList.add('show');
-}
-function closeEditModal() {
-  document.getElementById('edit-modal').classList.remove('show');
-  editDraft = null;
-}
-function editAdj(team, field, delta) {
-  editDraft[team][field] = Math.max(0, editDraft[team][field] + delta);
-  renderEditModal();
-  beep(delta>0?700:300,0.1,0.4);
-}
-function renderEditModal() {
-  document.getElementById('edit-white-m').textContent = editDraft.white.m;
-  document.getElementById('edit-red-m').textContent   = editDraft.red.m;
-  document.getElementById('edit-white-c').textContent = editDraft.white.c;
-  document.getElementById('edit-red-c').textContent   = editDraft.red.c;
-}
-function applyEdit() {
-  if (!lastMatchSnap || !editDraft) return;
-  if (lastMatchSnap.whiteWon) wins.white = Math.max(0, wins.white - 1);
-  if (lastMatchSnap.redWon)   wins.red   = Math.max(0, wins.red - 1);
-  if (mode === 'team') {
-    scores.white.c = Math.max(0, scores.white.c - lastMatchSnap.white.c + editDraft.white.c);
-    scores.red.c   = Math.max(0, scores.red.c   - lastMatchSnap.red.c   + editDraft.red.c);
-  }
-  const newWhiteWon = editDraft.white.m > editDraft.red.m;
-  const newRedWon   = editDraft.red.m   > editDraft.white.m;
-  if (newWhiteWon) wins.white++;
-  if (newRedWon)   wins.red++;
-  lastMatchSnap = {
-    white:{...editDraft.white}, red:{...editDraft.red},
-    whiteWon:newWhiteWon, redWon:newRedWon, matchNumVal:lastMatchSnap.matchNumVal
-  };
-  document.getElementById('red-wins').textContent   = wins.red;
-  document.getElementById('white-wins').textContent = wins.white;
-  render(); closeEditModal();
-  beep(660,0.15,0.5);
-}
-
-// ── RESET ────────────────────────────────────────────────────────────
-function openConfirm()  { document.getElementById('confirm-modal').classList.add('show'); }
-function closeConfirm() { document.getElementById('confirm-modal').classList.remove('show'); }
-function doResetAll(silent) {
-  if(silent!==true) closeConfirm();
-  scores={white:{m:0,c:0},red:{m:0,c:0}};
-  wins={white:0,red:0};
-  lastMatchSnap=null;
-  document.getElementById('btn-edit-match').classList.add('no-history');
-  document.getElementById('match-num-input').value=1;
-  document.getElementById('red-wins').textContent=0;
-  document.getElementById('white-wins').textContent=0;
-  render(); resetTimer();
-}
-
 // ── TIMER ────────────────────────────────────────────────────────────
 function setPreset(s,btn) {
   selTime=s;timeLeft=s;
@@ -892,80 +854,10 @@ function updateClock(){
   else if(timeLeft<=15)       el.classList.add('warning');
 }
 
-// ── NUMPAD TIME MODAL ─────────────────────────────────────────────
-let npDigits = [];
-function openTimeModal(){
-  if(running) return;
-  const m=Math.floor(selTime/60),s=selTime%60;
-  const st=Math.floor(s/10),su=s%10;
-  npDigits = m===0&&st===0&&su===0 ? [] : [m,st,su];
-  renderNP();
-  document.getElementById('time-modal').classList.add('show');
-}
-function closeTimeModal(){ document.getElementById('time-modal').classList.remove('show'); }
-function npDigit(d){
-  if(npDigits.length>=3) return;
-  if(npDigits.length===1 && d>5) return;
-  npDigits.push(d);
-  renderNP();
-  beep(700,0.06,0.3,'sine');
-}
-function npBack(){
-  if(npDigits.length===0) return;
-  npDigits.pop(); renderNP(); beep(300,0.06,0.3,'sine');
-}
-function npClear(){ npDigits=[]; renderNP(); beep(200,0.08,0.3,'sine'); }
-function renderNP(){
-  const padded=[0,0,0];
-  const offset=3-npDigits.length;
-  npDigits.forEach((v,i)=>padded[offset+i]=v);
-  document.getElementById('np-min').textContent = padded[0];
-  document.getElementById('np-sec').textContent = String(padded[1])+String(padded[2]);
-}
-function npToSeconds(){
-  const padded=[0,0,0];
-  const offset=3-npDigits.length;
-  npDigits.forEach((v,i)=>padded[offset+i]=v);
-  return padded[0]*60 + padded[1]*10 + padded[2];
-}
-function applyTime(){
-  const total=npToSeconds();
-  if(total<5){beep(200,0.1,0.5,'sine');return;}
-  selTime=total;timeLeft=total;
-  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('sel'));
-  updateClock();closeTimeModal();
-}
-
-// Backdrop tap closes modals
-['time-modal','edit-modal','confirm-modal'].forEach(id=>{
-  document.getElementById(id).addEventListener('click',function(e){
-    if(e.target===this){
-      if(id==='time-modal') closeTimeModal();
-      else if(id==='edit-modal') closeEditModal();
-      else closeConfirm();
-    }
-  });
-});
-
-// ── FLASH ────────────────────────────────────────────────────────────
-function flash(t){
-  const f=document.getElementById('flash');
-  f.className=t==='red'?'rf':'wf';
-  setTimeout(()=>f.className='',170);
-}
-
 // ── INIT ─────────────────────────────────────────────────────────────
 function init(){
-  loadBuzzer();
   setMode('team');
   updateClock();
-  if('wakeLock' in navigator){
-    navigator.wakeLock.request('screen').catch(()=>{});
-    document.addEventListener('visibilitychange',()=>{
-      if(document.visibilityState==='visible')
-        navigator.wakeLock.request('screen').catch(()=>{});
-    });
-  }
 }
 init();
 </script>
