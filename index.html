@@ -1,518 +1,565 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>SPARRING TIMER</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Oswald:wght@400;600;700&family=Barlow+Condensed:wght@400;700;900&display=swap');
-
-  /* ── DESIGN TOKENS ── */
-  :root {
-    --red:        #D10000;
-    --red-dark:   #8B0000;
-    --red-light:  #FF3333;
-    --white:      #F0F0F0;
-    --white-dark: #CCCCCC;
-    --black:      #080808;
-    --gray:       #161616;
-    --gray2:      #242424;
-    --gray3:      #333;
-    --accent:     #FFD700;
-
-    /* fluid type scale — one place to tune */
-    --t-xs:   clamp(0.5rem,  1.2vw + 0.2vh, 0.75rem);
-    --t-sm:   clamp(0.65rem, 1.5vw + 0.2vh, 0.95rem);
-    --t-md:   clamp(0.85rem, 2vw   + 0.3vh, 1.2rem);
-    --t-lg:   clamp(1.1rem,  3vw   + 0.5vh, 2rem);
-    --t-xl:   clamp(1.6rem,  4vw   + 1vh,   3.2rem);
-    --t-2xl:  clamp(2.5rem,  7vw   + 1.5vh, 7rem);
-
-    /* spacing */
-    --gap-xs: clamp(3px, 0.5vw, 6px);
-    --gap-sm: clamp(5px, 1vw,  10px);
-    --gap-md: clamp(8px, 1.5vw, 16px);
-
-    /* touch target floor */
-    --tap: clamp(40px, 6vh, 70px);
-  }
-
-  /* ── RESET ── */
-  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
-  html, body {
-    height:100%; overflow:hidden;
-    background:var(--black);
-    font-family:'Barlow Condensed', sans-serif;
-    user-select:none; touch-action:manipulation;
-  }
-
-  /* ── APP SHELL — always fills viewport exactly ── */
-  #shell {
-    display:flex; flex-direction:column;
-    width:100vw; height:100dvh;
-    overflow:hidden;
-  }
-
-  /* ════════════════════════════════════════
-     HEADER
-  ════════════════════════════════════════ */
-  #header {
-    background:var(--gray);
-    border-bottom:clamp(2px,0.5vh,4px) solid var(--accent);
-    padding:clamp(4px,1vh,10px) clamp(8px,2vw,18px);
-    display:flex; align-items:center;
-    justify-content:space-between;
-    flex-shrink:0; gap:var(--gap-sm);
-    min-height:0;
-  }
-  #header h1 {
-    font-family:'Black Ops One',cursive;
-    font-size:var(--t-lg);
-    color:var(--white); letter-spacing:clamp(2px,0.5vw,5px);
-    white-space:nowrap;
-  }
-  #header h1 span { color:var(--accent); }
-
-  .header-controls { display:flex; align-items:center; gap:var(--gap-sm); flex-shrink:0; }
-
-  .mode-switch { display:flex; border:clamp(2px,0.3vw,3px) solid var(--accent); }
-  .mode-btn {
-    background:transparent; border:none; color:var(--white-dark);
-    font-family:'Oswald',sans-serif; font-size:var(--t-sm);
-    font-weight:700; letter-spacing:2px;
-    padding:clamp(6px,1vh,10px) clamp(10px,2vw,22px);
-    cursor:pointer; text-transform:uppercase;
-    min-height:var(--tap); white-space:nowrap;
-  }
-  .mode-btn.active { background:var(--accent); color:var(--black); }
-  .mode-btn:active { filter:brightness(0.85); }
-
-  #btn-reset-all {
-    background:#3a0000; border:2px solid #660000; color:#ff6666;
-    font-family:'Oswald',sans-serif; font-size:var(--t-xs);
-    font-weight:700; letter-spacing:2px;
-    padding:clamp(6px,1vh,10px) clamp(8px,1.5vw,14px);
-    cursor:pointer; text-transform:uppercase;
-    min-height:var(--tap); white-space:nowrap;
-  }
-  #btn-reset-all:active { filter:brightness(1.3); }
-
-  /* ════════════════════════════════════════
-     MATCH BAR
-  ════════════════════════════════════════ */
-  #match-bar {
-    background:var(--gray2);
-    border-bottom:clamp(2px,0.3vh,3px) solid var(--gray3);
-    padding:clamp(4px,0.8vh,8px) clamp(8px,2vw,16px);
-    display:flex; align-items:center;
-    justify-content:space-between;
-    flex-shrink:0; flex-wrap:wrap; gap:var(--gap-xs);
-  }
-  #match-bar.hidden { display:none; }
-  .mb-group { display:flex; align-items:center; gap:clamp(10px,2.5vw,24px); }
-  .mb-item { text-align:center; }
-  .mb-label {
-    font-family:'Oswald',sans-serif; font-size:var(--t-xs);
-    letter-spacing:2px; color:#666; text-transform:uppercase; display:block;
-  }
-  .mb-value {
-    font-family:'Black Ops One',cursive; font-size:var(--t-md);
-    color:var(--accent); line-height:1;
-  }
-  #match-num-input {
-    font-family:'Black Ops One',cursive; font-size:var(--t-md);
-    color:var(--accent); background:transparent; border:none;
-    border-bottom:2px solid #555; width:2.4ch; text-align:center;
-    -moz-appearance:textfield; padding:0; line-height:1;
-  }
-  #match-num-input::-webkit-inner-spin-button,
-  #match-num-input::-webkit-outer-spin-button { -webkit-appearance:none; }
-  #match-num-input:focus { outline:none; border-bottom-color:var(--accent); }
-
-  .mb-actions { display:flex; gap:var(--gap-xs); }
-  #btn-next-match {
-    background:var(--accent); border:none; color:var(--black);
-    font-family:'Oswald',sans-serif; font-size:var(--t-sm);
-    font-weight:700; letter-spacing:2px;
-    padding:clamp(6px,1vh,10px) clamp(10px,2vw,20px);
-    cursor:pointer; text-transform:uppercase;
-    min-height:var(--tap); white-space:nowrap;
-  }
-  #btn-next-match:active { filter:brightness(0.82); }
-
-  #btn-edit-match {
-    background:#1a2a00; border:2px solid #3a5500; color:#aadd44;
-    font-family:'Oswald',sans-serif; font-size:var(--t-sm);
-    font-weight:700; letter-spacing:2px;
-    padding:clamp(6px,1vh,10px) clamp(10px,2vw,16px);
-    cursor:pointer; text-transform:uppercase;
-    min-height:var(--tap); white-space:nowrap;
-  }
-  #btn-edit-match:active { filter:brightness(1.3); }
-  #btn-edit-match.no-history { opacity:0.35; pointer-events:none; }
-
-  /* ════════════════════════════════════════
-     MAIN GRID  — landscape: 3 cols, portrait: stacked
-  ════════════════════════════════════════ */
-  #main {
-    display:grid;
-    flex:1;
-    min-height:0;
-    overflow:hidden;
-  }
-
-  /* Landscape default: side-by-side */
-  @media (orientation:landscape) {
-    #main {
-      grid-template-columns: 1fr clamp(160px, 22vw, 280px) 1fr;
-      grid-template-rows: 1fr;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>SPARRING TIMER</title>
+  <style>
+    @font-face {
+      font-family: 'Black Ops One';
+      src: url('fonts/black-ops-one-regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
     }
-  }
 
-  /* Portrait: timer on top, teams side by side below */
-  @media (orientation:portrait) {
-    #main {
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto 1fr;
+    @font-face {
+      font-family: 'Oswald';
+      src: url('fonts/oswald-400.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
     }
-    /* center panel spans full width at top */
+    @font-face {
+      font-family: 'Oswald';
+      src: url('fonts/oswald-600.woff2') format('woff2');
+      font-weight: 600;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: 'Oswald';
+      src: url('fonts/oswald-700.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: block;
+    }
+
+    @font-face {
+      font-family: 'Barlow Condensed';
+      src: url('fonts/barlow-condensed-400.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: 'Barlow Condensed';
+      src: url('fonts/barlow-condensed-700.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: 'Barlow Condensed';
+      src: url('fonts/barlow-condensed-900.woff2') format('woff2');
+      font-weight: 900;
+      font-style: normal;
+      font-display: block;
+    }
+
+    /* ── DESIGN TOKENS ── */
+    :root {
+      --red:        #D10000;
+      --red-dark:   #8B0000;
+      --red-light:  #FF3333;
+      --white:      #F0F0F0;
+      --white-dark: #CCCCCC;
+      --black:      #080808;
+      --gray:       #161616;
+      --gray2:      #242424;
+      --gray3:      #333;
+      --accent:     #FFD700;
+
+      /* fluid type scale — one place to tune */
+      --t-xs:   clamp(0.5rem,  1.2vw + 0.2vh, 0.75rem);
+      --t-sm:   clamp(0.65rem, 1.5vw + 0.2vh, 0.95rem);
+      --t-md:   clamp(0.85rem, 2vw   + 0.3vh, 1.2rem);
+      --t-lg:   clamp(1.1rem,  3vw   + 0.5vh, 2rem);
+      --t-xl:   clamp(1.6rem,  4vw   + 1vh,   3.2rem);
+      --t-2xl:  clamp(2.5rem,  7vw   + 1.5vh, 7rem);
+
+      /* spacing */
+      --gap-xs: clamp(3px, 0.5vw, 6px);
+      --gap-sm: clamp(5px, 1vw,  10px);
+      --gap-md: clamp(8px, 1.5vw, 16px);
+
+      /* touch target floor */
+      --tap: clamp(40px, 6vh, 70px);
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+    html, body {
+      height:100%; overflow:hidden;
+      background:var(--black);
+      font-family:'Barlow Condensed', sans-serif;
+      user-select:none; touch-action:manipulation;
+    }
+
+    /* ── APP SHELL — always fills viewport exactly ── */
+    #shell {
+      display:flex; flex-direction:column;
+      width:100vw; height:100dvh;
+      overflow:hidden;
+    }
+
+    /* ════════════════════════════════════════
+       HEADER
+    ════════════════════════════════════════ */
+    #header {
+      background:var(--gray);
+      border-bottom:clamp(2px,0.5vh,4px) solid var(--accent);
+      padding:clamp(4px,1vh,10px) clamp(8px,2vw,18px);
+      display:flex; align-items:center;
+      justify-content:space-between;
+      flex-shrink:0; gap:var(--gap-sm);
+      min-height:0;
+    }
+    #header h1 {
+      font-family:'Black Ops One',cursive;
+      font-size:var(--t-lg);
+      color:var(--white); letter-spacing:clamp(2px,0.5vw,5px);
+      white-space:nowrap;
+    }
+    #header h1 span { color:var(--accent); }
+
+    .header-controls { display:flex; align-items:center; gap:var(--gap-sm); flex-shrink:0; }
+
+    .mode-switch { display:flex; border:clamp(2px,0.3vw,3px) solid var(--accent); }
+    .mode-btn {
+      background:transparent; border:none; color:var(--white-dark);
+      font-family:'Oswald',sans-serif; font-size:var(--t-sm);
+      font-weight:700; letter-spacing:2px;
+      padding:clamp(6px,1vh,10px) clamp(10px,2vw,22px);
+      cursor:pointer; text-transform:uppercase;
+      min-height:var(--tap); white-space:nowrap;
+    }
+    .mode-btn.active { background:var(--accent); color:var(--black); }
+    .mode-btn:active { filter:brightness(0.85); }
+
+    #btn-reset-all {
+      background:#3a0000; border:2px solid #660000; color:#ff6666;
+      font-family:'Oswald',sans-serif; font-size:var(--t-xs);
+      font-weight:700; letter-spacing:2px;
+      padding:clamp(6px,1vh,10px) clamp(8px,1.5vw,14px);
+      cursor:pointer; text-transform:uppercase;
+      min-height:var(--tap); white-space:nowrap;
+    }
+    #btn-reset-all:active { filter:brightness(1.3); }
+
+    /* ════════════════════════════════════════
+       MATCH BAR
+    ════════════════════════════════════════ */
+    #match-bar {
+      background:var(--gray2);
+      border-bottom:clamp(2px,0.3vh,3px) solid var(--gray3);
+      padding:clamp(4px,0.8vh,8px) clamp(8px,2vw,16px);
+      display:flex; align-items:center;
+      justify-content:space-between;
+      flex-shrink:0; flex-wrap:wrap; gap:var(--gap-xs);
+    }
+    #match-bar.hidden { display:none; }
+    .mb-group { display:flex; align-items:center; gap:clamp(10px,2.5vw,24px); }
+    .mb-item { text-align:center; }
+    .mb-label {
+      font-family:'Oswald',sans-serif; font-size:var(--t-xs);
+      letter-spacing:2px; color:#666; text-transform:uppercase; display:block;
+    }
+    .mb-value {
+      font-family:'Black Ops One',cursive; font-size:var(--t-md);
+      color:var(--accent); line-height:1;
+    }
+    #match-num-input {
+      font-family:'Black Ops One',cursive; font-size:var(--t-md);
+      color:var(--accent); background:transparent; border:none;
+      border-bottom:2px solid #555; width:2.4ch; text-align:center;
+      -moz-appearance:textfield; padding:0; line-height:1;
+    }
+    #match-num-input::-webkit-inner-spin-button,
+    #match-num-input::-webkit-outer-spin-button { -webkit-appearance:none; }
+    #match-num-input:focus { outline:none; border-bottom-color:var(--accent); }
+
+    .mb-actions { display:flex; gap:var(--gap-xs); }
+    #btn-next-match {
+      background:var(--accent); border:none; color:var(--black);
+      font-family:'Oswald',sans-serif; font-size:var(--t-sm);
+      font-weight:700; letter-spacing:2px;
+      padding:clamp(6px,1vh,10px) clamp(10px,2vw,20px);
+      cursor:pointer; text-transform:uppercase;
+      min-height:var(--tap); white-space:nowrap;
+    }
+    #btn-next-match:active { filter:brightness(0.82); }
+
+    #btn-edit-match {
+      background:#1a2a00; border:2px solid #3a5500; color:#aadd44;
+      font-family:'Oswald',sans-serif; font-size:var(--t-sm);
+      font-weight:700; letter-spacing:2px;
+      padding:clamp(6px,1vh,10px) clamp(10px,2vw,16px);
+      cursor:pointer; text-transform:uppercase;
+      min-height:var(--tap); white-space:nowrap;
+    }
+    #btn-edit-match:active { filter:brightness(1.3); }
+    #btn-edit-match.no-history { opacity:0.35; pointer-events:none; }
+
+    /* ════════════════════════════════════════
+       MAIN GRID  — landscape: 3 cols, portrait: stacked
+    ════════════════════════════════════════ */
+    #main {
+      display:grid;
+      flex:1;
+      min-height:0;
+      overflow:hidden;
+    }
+
+    /* Landscape default: side-by-side */
+    @media (orientation:landscape) {
+      #main {
+        grid-template-columns: 1fr clamp(160px, 22vw, 280px) 1fr;
+        grid-template-rows: 1fr;
+      }
+    }
+
+    /* Portrait: timer on top, teams side by side below */
+    @media (orientation:portrait) {
+      #main {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto 1fr;
+      }
+      /* center panel spans full width at top */
+      #center-panel {
+        grid-column: 1 / -1;
+        grid-row: 1;
+        flex-direction: row !important;
+        justify-content: center !important;
+        flex-wrap: wrap;
+        gap: var(--gap-sm) !important;
+        padding: clamp(6px,1.5vh,12px) clamp(8px,2vw,16px) !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-bottom: 3px solid var(--gray3);
+      }
+      #timer-display { width:auto; flex-shrink:0; }
+      .presets { width:auto; flex-shrink:0; min-width:clamp(120px,30vw,200px); }
+      .center-btns { flex-direction:column; flex-shrink:0; min-width:clamp(100px,22vw,160px); }
+      /* teams in row 2 */
+      .team-panel { grid-row: 2; }
+    }
+
+    /* ════════════════════════════════════════
+       TEAM PANELS
+    ════════════════════════════════════════ */
+    .team-panel { display:flex; flex-direction:column; overflow:hidden; min-height:0; }
+
+    .team-banner {
+      font-family:'Black Ops One',cursive;
+      font-size:var(--t-xl);
+      letter-spacing:clamp(3px,1vw,8px);
+      text-align:center;
+      padding:clamp(6px,1.2vh,14px) 0 clamp(4px,0.8vh,10px);
+      flex-shrink:0;
+      clip-path:polygon(0 0,100% 0,94% 100%,6% 100%);
+    }
+    .white-banner { background:var(--white); color:var(--black); }
+    .red-banner   { background:var(--red);   color:var(--white); }
+
+    .team-body {
+      display:flex; flex-direction:column;
+      flex:1; padding:var(--gap-sm); gap:var(--gap-sm); overflow:hidden; min-height:0;
+    }
+
+    .score-block {
+      background:var(--gray); display:flex; flex-direction:column;
+      align-items:center; padding:var(--gap-sm) var(--gap-sm) var(--gap-xs);
+      flex:1; overflow:hidden; min-height:0;
+    }
+    .cum-block {
+      background:var(--gray2); display:flex; flex-direction:column;
+      align-items:center; padding:var(--gap-sm);
+      flex:1; min-height:0; overflow:hidden;
+    }
+    .score-block.wb { border:clamp(2px,0.3vw,3px) solid var(--white-dark); }
+    .score-block.rb { border:clamp(2px,0.3vw,3px) solid var(--red-dark); }
+    .cum-block.wb   { border:clamp(2px,0.3vw,3px) solid var(--white-dark); }
+    .cum-block.rb   { border:clamp(2px,0.3vw,3px) solid var(--red-dark); }
+    .cum-block.hidden { display:none; }
+
+    /* When cumulative hidden in individual mode, match block takes all space */
+    .cum-block.hidden + .score-block,
+    .score-block:only-child { flex:1; }
+
+    .score-lbl {
+      font-family:'Oswald',sans-serif; font-size:var(--t-xs);
+      letter-spacing:2px; text-transform:uppercase; color:#666;
+      margin-bottom:clamp(1px,0.3vh,4px); flex-shrink:0;
+    }
+    .score-num {
+      font-family:'Black Ops One',cursive;
+      font-size:clamp(2.5rem, 7vw + 1.5vh, 7rem);
+      line-height:1; flex:1;
+      display:flex; align-items:center; justify-content:center; min-height:0;
+      max-width:100%; overflow:hidden;
+    }
+    .cum-num {
+      font-family:'Black Ops One',cursive;
+      font-size:clamp(2.5rem, 7vw + 1.5vh, 7rem);
+      line-height:1; flex:1;
+      display:flex; align-items:center; justify-content:center; min-height:0;
+      max-width:100%; overflow:hidden;
+    }
+    /* Individual mode: cum-block is hidden so score-block fills full height —
+       use that extra room to grow the number significantly */
+    .cum-block.hidden ~ * .score-num,
+    .team-body:has(.cum-block.hidden) .score-num {
+      font-size:clamp(4rem, 9vw + 6vh, 14rem);
+    }
+    .wn { color:var(--white); }
+    .rn { color:var(--red-light); }
+
+    .score-btns { display:grid; grid-template-columns:1fr 1fr; gap:var(--gap-xs); width:100%; flex-shrink:0; }
+    .sbtn {
+      font-family:'Black Ops One',cursive;
+      font-size:clamp(1.4rem, 4vw + 1vh, 3rem);
+      border:none; cursor:pointer;
+      padding:clamp(8px,1.5vh,18px) 0;
+      line-height:1; min-height:var(--tap);
+    }
+    .sbtn:active { filter:brightness(0.7); transform:scale(0.95); }
+    .pw { background:var(--white);    color:var(--black); }
+    .mw { background:#777;            color:var(--black); }
+    .pr { background:var(--red);      color:var(--white); }
+    .mr { background:var(--red-dark); color:#ddd; }
+
+    /* ════════════════════════════════════════
+       CENTER PANEL
+    ════════════════════════════════════════ */
     #center-panel {
-      grid-column: 1 / -1;
-      grid-row: 1;
-      flex-direction: row !important;
-      justify-content: center !important;
-      flex-wrap: wrap;
-      gap: var(--gap-sm) !important;
-      padding: clamp(6px,1.5vh,12px) clamp(8px,2vw,16px) !important;
-      border-left: none !important;
-      border-right: none !important;
-      border-bottom: 3px solid var(--gray3);
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      padding:clamp(8px,1.5vh,16px) clamp(6px,1vw,12px);
+      gap:var(--gap-sm);
+      background:var(--gray);
+      border-left:clamp(2px,0.3vw,3px) solid var(--gray3);
+      border-right:clamp(2px,0.3vw,3px) solid var(--gray3);
+      overflow:hidden; min-height:0;
     }
-    #timer-display { width:auto; flex-shrink:0; }
-    .presets { width:auto; flex-shrink:0; min-width:clamp(120px,30vw,200px); }
-    .center-btns { flex-direction:column; flex-shrink:0; min-width:clamp(100px,22vw,160px); }
-    /* teams in row 2 */
-    .team-panel { grid-row: 2; }
-  }
 
-  /* ════════════════════════════════════════
-     TEAM PANELS
-  ════════════════════════════════════════ */
-  .team-panel { display:flex; flex-direction:column; overflow:hidden; min-height:0; }
+    /* wrapper div so portrait can lay them out as a row */
+    .center-btns { display:flex; flex-direction:column; gap:var(--gap-xs); width:100%; }
 
-  .team-banner {
-    font-family:'Black Ops One',cursive;
-    font-size:var(--t-xl);
-    letter-spacing:clamp(3px,1vw,8px);
-    text-align:center;
-    padding:clamp(6px,1.2vh,14px) 0 clamp(4px,0.8vh,10px);
-    flex-shrink:0;
-    clip-path:polygon(0 0,100% 0,94% 100%,6% 100%);
-  }
-  .white-banner { background:var(--white); color:var(--black); }
-  .red-banner   { background:var(--red);   color:var(--white); }
-
-  .team-body {
-    display:flex; flex-direction:column;
-    flex:1; padding:var(--gap-sm); gap:var(--gap-sm); overflow:hidden; min-height:0;
-  }
-
-  .score-block {
-    background:var(--gray); display:flex; flex-direction:column;
-    align-items:center; padding:var(--gap-sm) var(--gap-sm) var(--gap-xs);
-    flex:1; overflow:hidden; min-height:0;
-  }
-  .cum-block {
-    background:var(--gray2); display:flex; flex-direction:column;
-    align-items:center; padding:var(--gap-sm);
-    flex:1; min-height:0; overflow:hidden;
-  }
-  .score-block.wb { border:clamp(2px,0.3vw,3px) solid var(--white-dark); }
-  .score-block.rb { border:clamp(2px,0.3vw,3px) solid var(--red-dark); }
-  .cum-block.wb   { border:clamp(2px,0.3vw,3px) solid var(--white-dark); }
-  .cum-block.rb   { border:clamp(2px,0.3vw,3px) solid var(--red-dark); }
-  .cum-block.hidden { display:none; }
-
-  /* When cumulative hidden in individual mode, match block takes all space */
-  .cum-block.hidden + .score-block,
-  .score-block:only-child { flex:1; }
-
-  .score-lbl {
-    font-family:'Oswald',sans-serif; font-size:var(--t-xs);
-    letter-spacing:2px; text-transform:uppercase; color:#666;
-    margin-bottom:clamp(1px,0.3vh,4px); flex-shrink:0;
-  }
-  .score-num {
-    font-family:'Black Ops One',cursive;
-    font-size:clamp(2.5rem, 7vw + 1.5vh, 7rem);
-    line-height:1; flex:1;
-    display:flex; align-items:center; justify-content:center; min-height:0;
-    max-width:100%; overflow:hidden;
-  }
-  .cum-num {
-    font-family:'Black Ops One',cursive;
-    font-size:clamp(2.5rem, 7vw + 1.5vh, 7rem);
-    line-height:1; flex:1;
-    display:flex; align-items:center; justify-content:center; min-height:0;
-    max-width:100%; overflow:hidden;
-  }
-  /* Individual mode: cum-block is hidden so score-block fills full height —
-     use that extra room to grow the number significantly */
-  .cum-block.hidden ~ * .score-num,
-  .team-body:has(.cum-block.hidden) .score-num {
-    font-size:clamp(4rem, 9vw + 6vh, 14rem);
-  }
-  .wn { color:var(--white); }
-  .rn { color:var(--red-light); }
-
-  .score-btns { display:grid; grid-template-columns:1fr 1fr; gap:var(--gap-xs); width:100%; flex-shrink:0; }
-  .sbtn {
-    font-family:'Black Ops One',cursive;
-    font-size:clamp(1.4rem, 4vw + 1vh, 3rem);
-    border:none; cursor:pointer;
-    padding:clamp(8px,1.5vh,18px) 0;
-    line-height:1; min-height:var(--tap);
-  }
-  .sbtn:active { filter:brightness(0.7); transform:scale(0.95); }
-  .pw { background:var(--white);    color:var(--black); }
-  .mw { background:#777;            color:var(--black); }
-  .pr { background:var(--red);      color:var(--white); }
-  .mr { background:var(--red-dark); color:#ddd; }
-
-  /* ════════════════════════════════════════
-     CENTER PANEL
-  ════════════════════════════════════════ */
-  #center-panel {
-    display:flex; flex-direction:column;
-    align-items:center; justify-content:center;
-    padding:clamp(8px,1.5vh,16px) clamp(6px,1vw,12px);
-    gap:var(--gap-sm);
-    background:var(--gray);
-    border-left:clamp(2px,0.3vw,3px) solid var(--gray3);
-    border-right:clamp(2px,0.3vw,3px) solid var(--gray3);
-    overflow:hidden; min-height:0;
-  }
-
-  /* wrapper div so portrait can lay them out as a row */
-  .center-btns { display:flex; flex-direction:column; gap:var(--gap-xs); width:100%; }
-
-  #timer-display {
-    background:var(--black);
-    border:clamp(2px,0.4vw,4px) solid var(--accent);
-    padding:clamp(8px,1.5vh,14px) clamp(6px,1vw,10px) clamp(4px,0.8vh,8px);
-    text-align:center; width:100%; cursor:pointer; position:relative;
-  }
-  #timer-hint {
-    font-family:'Oswald',sans-serif; font-size:var(--t-xs);
-    letter-spacing:2px; color:#3a3a3a; text-transform:uppercase;
-    position:absolute; top:3px; right:5px;
-  }
-  #timer-text {
-    font-family:'Black Ops One',cursive;
-    /* Use vw-dominant scaling so it always fits the narrow center column.
-       4vw covers the "2:00" string (~4 chars) inside ~22vw column. */
-    font-size:clamp(1.6rem, 4.2vw + 1vh, 4rem);
-    color:var(--accent); letter-spacing:clamp(1px,0.3vw,4px);
-    line-height:1; display:block; transition:color 0.25s;
-    /* Hard stop — never overflow the timer box */
-    white-space:nowrap; overflow:hidden;
-  }
-  #timer-text.warning { color:#FF8800; }
-  #timer-text.danger  { color:var(--red-light); animation:blink 0.45s infinite; }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-  #timer-sub {
-    font-family:'Oswald',sans-serif; font-size:var(--t-xs);
-    letter-spacing:3px; color:#444; text-transform:uppercase;
-    margin-top:clamp(1px,0.3vh,4px);
-  }
-
-  .presets { display:grid; grid-template-columns:1fr 1fr; gap:var(--gap-xs); width:100%; }
-  .preset-btn {
-    background:var(--gray2); border:clamp(1px,0.2vw,2px) solid var(--gray3); color:var(--white-dark);
-    font-family:'Oswald',sans-serif; font-size:var(--t-sm);
-    font-weight:700; letter-spacing:1px;
-    padding:clamp(6px,1.2vh,12px) 4px;
-    cursor:pointer; text-align:center; text-transform:uppercase;
-    min-height:var(--tap);
-  }
-  .preset-btn.sel { background:var(--accent); color:var(--black); border-color:var(--accent); }
-  .preset-btn:active { filter:brightness(0.8); }
-
-  #btn-start {
-    background:#004d00; border:none; color:#00DD55;
-    font-family:'Black Ops One',cursive; font-size:var(--t-md);
-    letter-spacing:3px;
-    padding:clamp(8px,1.5vh,16px);
-    width:100%; cursor:pointer; text-transform:uppercase;
-    min-height:clamp(44px,7vh,68px);
-  }
-  #btn-start.running { background:#5c2900; color:#FFAA33; }
-  #btn-start:active  { filter:brightness(0.78); }
-
-  #btn-reset-timer {
-    background:var(--gray2); border:clamp(1px,0.2vw,2px) solid var(--gray3); color:#666;
-    font-family:'Oswald',sans-serif; font-size:var(--t-xs);
-    font-weight:700; letter-spacing:2px;
-    padding:clamp(6px,1vh,10px);
-    width:100%; cursor:pointer; text-transform:uppercase;
-    min-height:var(--tap);
-  }
-  #btn-reset-timer:active { border-color:var(--red-light); color:var(--red-light); }
-
-  /* ════════════════════════════════════════
-     SHARED MODAL OVERLAY
-  ════════════════════════════════════════ */
-  .overlay-modal {
-    display:none; position:fixed; inset:0;
-    background:rgba(0,0,0,0.9); z-index:50;
-    align-items:center; justify-content:center;
-    padding:clamp(8px,2vw,20px);
-  }
-  .overlay-modal.show { display:flex; }
-
-  .modal-row { display:flex; gap:var(--gap-sm); width:100%; }
-  .mbtn {
-    flex:1; font-family:'Oswald',sans-serif; font-size:var(--t-md);
-    font-weight:700; letter-spacing:2px;
-    padding:clamp(10px,1.8vh,16px);
-    border:none; cursor:pointer; text-transform:uppercase;
-    min-height:clamp(44px,7vh,60px);
-  }
-  .mbtn-ok     { background:var(--accent); color:var(--black); }
-  .mbtn-cancel { background:var(--gray2); color:#777; border:2px solid var(--gray3); }
-  .mbtn:active { filter:brightness(0.82); }
-
-  /* ── NUMPAD TIME MODAL ── */
-  #time-modal-box {
-    background:var(--gray); border:clamp(3px,0.4vw,4px) solid var(--accent);
-    padding:clamp(12px,2vh,20px);
-    display:flex; flex-direction:column; align-items:center;
-    gap:clamp(8px,1.5vh,14px);
-    width:min(340px, 96vw);
-    max-height:96dvh; overflow-y:auto;
-  }
-  #time-modal-box h3 {
-    font-family:'Black Ops One',cursive; font-size:var(--t-md);
-    letter-spacing:4px; color:var(--accent); text-transform:uppercase; align-self:flex-start;
-  }
-  #np-display {
-    background:var(--black); border:clamp(2px,0.3vw,3px) solid var(--accent); width:100%;
-    padding:clamp(6px,1.2vh,12px) 14px;
-    display:flex; align-items:baseline; justify-content:center; gap:2px;
-  }
-  #np-min, #np-sec {
-    font-family:'Black Ops One',cursive;
-    font-size:clamp(2rem,8vw + 1vh,3.4rem);
-    color:var(--accent); letter-spacing:2px; line-height:1;
-  }
-  #np-colon {
-    font-family:'Black Ops One',cursive;
-    font-size:clamp(1.8rem,7vw,3rem); color:#555; margin:0 3px; line-height:1;
-  }
-  #np-hint {
-    font-family:'Oswald',sans-serif; font-size:var(--t-xs);
-    letter-spacing:2px; color:#444; text-transform:uppercase; align-self:flex-start;
-  }
-  .numpad { display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(5px,1vw,8px); width:100%; }
-  .np-btn {
-    font-family:'Black Ops One',cursive;
-    font-size:clamp(1.4rem,5vw,2rem);
-    background:var(--gray2); border:clamp(2px,0.3vw,3px) solid var(--gray3); color:var(--white);
-    padding:0; cursor:pointer; text-align:center; line-height:1;
-    min-height:clamp(52px,8vh,72px);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .np-btn:active { background:#3a3a3a; transform:scale(0.93); }
-  .np-btn.np-back  { background:#3a1a00; border-color:#663300; color:#FF8844; font-size:clamp(1.2rem,4vw,1.6rem); }
-  .np-btn.np-clear { background:#3a0000; border-color:#660000; color:#ff6666; font-size:var(--t-sm); font-family:'Oswald',sans-serif; font-weight:700; letter-spacing:1px; }
-
-  /* ── EDIT LAST MATCH MODAL ── */
-  #edit-modal-box {
-    background:var(--gray); border:clamp(3px,0.4vw,4px) solid #FF8800;
-    padding:clamp(14px,2.5vh,24px) clamp(14px,3vw,26px);
-    display:flex; flex-direction:column; align-items:center;
-    gap:clamp(10px,1.8vh,16px);
-    width:min(420px, 96vw);
-    max-height:96dvh; overflow-y:auto;
-  }
-  #edit-modal-box h3 {
-    font-family:'Black Ops One',cursive; font-size:var(--t-md);
-    letter-spacing:3px; color:#FF8800; text-transform:uppercase;
-  }
-  #edit-modal-box > p {
-    font-family:'Oswald',sans-serif; font-size:var(--t-xs);
-    letter-spacing:2px; color:#666; text-transform:uppercase; text-align:center; line-height:1.5;
-  }
-  .edit-teams { display:grid; grid-template-columns:1fr 1fr; gap:clamp(8px,2vw,14px); width:100%; }
-  .edit-team-col { display:flex; flex-direction:column; gap:var(--gap-sm); align-items:center; }
-  .edit-team-label {
-    font-family:'Black Ops One',cursive; font-size:var(--t-sm);
-    letter-spacing:3px; padding:clamp(4px,0.8vh,8px) 0; width:100%; text-align:center;
-    clip-path:polygon(0 0,100% 0,94% 100%,6% 100%);
-  }
-  .etw { background:var(--white); color:var(--black); }
-  .etr { background:var(--red);   color:var(--white); }
-  .edit-field-group { width:100%; display:flex; flex-direction:column; gap:3px; }
-  .edit-field-lbl { font-family:'Oswald',sans-serif; font-size:var(--t-xs); letter-spacing:3px; color:#666; text-transform:uppercase; }
-  .edit-row { display:flex; align-items:stretch; border:2px solid var(--gray3); background:var(--black); }
-  .edit-row button {
-    font-family:'Black Ops One',cursive; font-size:clamp(1.2rem,4vw,1.6rem);
-    background:var(--gray2); border:none; color:var(--white);
-    padding:0 clamp(10px,2vw,16px); cursor:pointer;
-    min-height:clamp(44px,6vh,58px); min-width:clamp(36px,5vw,50px); line-height:1;
-  }
-  .edit-row button:active { filter:brightness(1.5); }
-  .edit-val {
-    font-family:'Black Ops One',cursive;
-    font-size:clamp(1.6rem,5vw,2.2rem);
-    color:var(--white); flex:1; text-align:center; line-height:1;
-    padding:clamp(4px,0.8vh,8px) 0;
-    display:flex; align-items:center; justify-content:center;
-  }
-
-  /* ── CONFIRM RESET MODAL ── */
-  #confirm-box {
-    background:var(--gray); border:clamp(3px,0.4vw,4px) solid var(--red-light);
-    padding:clamp(18px,3vh,28px) clamp(20px,4vw,34px);
-    display:flex; flex-direction:column; align-items:center;
-    gap:clamp(10px,1.8vh,16px); min-width:min(270px,90vw); text-align:center;
-  }
-  #confirm-box h3 { font-family:'Black Ops One',cursive; font-size:var(--t-md); letter-spacing:3px; color:var(--red-light); text-transform:uppercase; }
-  #confirm-box p  { font-family:'Oswald',sans-serif; font-size:var(--t-sm); letter-spacing:2px; color:#888; text-transform:uppercase; }
-
-  /* ── FLASH ── */
-  #flash { position:fixed; inset:0; pointer-events:none; z-index:99; opacity:0; transition:opacity 0.07s; }
-  #flash.rf { background:var(--red); opacity:0.18; }
-  #flash.wf { background:#fff;       opacity:0.13; }
-
-  /* ════════════════════════════════════════
-     BREAKPOINT TWEAKS
-  ════════════════════════════════════════ */
-
-  /* Very small phones — tighten further */
-  @media (max-width:380px) {
-    :root {
-      --t-2xl: clamp(2rem, 14vw + 0.5vh, 5rem);
+    #timer-display {
+      background:var(--black);
+      border:clamp(2px,0.4vw,4px) solid var(--accent);
+      padding:clamp(8px,1.5vh,14px) clamp(6px,1vw,10px) clamp(4px,0.8vh,8px);
+      text-align:center; width:100%; cursor:pointer; position:relative;
     }
-    .team-banner { letter-spacing:2px; }
-  }
-
-  /* Tall portrait phones — give scores more room */
-  @media (orientation:portrait) and (min-height:700px) {
-    :root { --tap: clamp(48px, 7vh, 80px); }
-  }
-
-  /* Large desktop / widescreen */
-  @media (min-width:1400px) {
-    :root {
-      --t-2xl: clamp(4rem, 8vw + 1vh, 9rem);
+    #timer-hint {
+      font-family:'Oswald',sans-serif; font-size:var(--t-xs);
+      letter-spacing:2px; color:#3a3a3a; text-transform:uppercase;
+      position:absolute; top:3px; right:5px;
     }
-  }
-</style>
+    #timer-text {
+      font-family:'Black Ops One',cursive;
+      font-size:clamp(1.6rem, 4.2vw + 1vh, 4rem);
+      color:var(--accent); letter-spacing:clamp(1px,0.3vw,4px);
+      line-height:1; display:block; transition:color 0.25s;
+      white-space:nowrap; overflow:hidden;
+    }
+    #timer-text.warning { color:#FF8800; }
+    #timer-text.danger  { color:var(--red-light); animation:blink 0.45s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    #timer-sub {
+      font-family:'Oswald',sans-serif; font-size:var(--t-xs);
+      letter-spacing:3px; color:#444; text-transform:uppercase;
+      margin-top:clamp(1px,0.3vh,4px);
+    }
+
+    .presets { display:grid; grid-template-columns:1fr 1fr; gap:var(--gap-xs); width:100%; }
+    .preset-btn {
+      background:var(--gray2); border:clamp(1px,0.2vw,2px) solid var(--gray3); color:var(--white-dark);
+      font-family:'Oswald',sans-serif; font-size:var(--t-sm);
+      font-weight:700; letter-spacing:1px;
+      padding:clamp(6px,1.2vh,12px) 4px;
+      cursor:pointer; text-align:center; text-transform:uppercase;
+      min-height:var(--tap);
+    }
+    .preset-btn.sel { background:var(--accent); color:var(--black); border-color:var(--accent); }
+    .preset-btn:active { filter:brightness(0.8); }
+
+    #btn-start {
+      background:#004d00; border:none; color:#00DD55;
+      font-family:'Black Ops One',cursive; font-size:var(--t-md);
+      letter-spacing:3px;
+      padding:clamp(8px,1.5vh,16px);
+      width:100%; cursor:pointer; text-transform:uppercase;
+      min-height:clamp(44px,7vh,68px);
+    }
+    #btn-start.running { background:#5c2900; color:#FFAA33; }
+    #btn-start:active  { filter:brightness(0.78); }
+
+    #btn-reset-timer {
+      background:var(--gray2); border:clamp(1px,0.2vw,2px) solid var(--gray3); color:#666;
+      font-family:'Oswald',sans-serif; font-size:var(--t-xs);
+      font-weight:700; letter-spacing:2px;
+      padding:clamp(6px,1vh,10px);
+      width:100%; cursor:pointer; text-transform:uppercase;
+      min-height:var(--tap);
+    }
+    #btn-reset-timer:active { border-color:var(--red-light); color:var(--red-light); }
+
+    /* ════════════════════════════════════════
+       SHARED MODAL OVERLAY
+    ════════════════════════════════════════ */
+    .overlay-modal {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,0.9); z-index:50;
+      align-items:center; justify-content:center;
+      padding:clamp(8px,2vw,20px);
+    }
+    .overlay-modal.show { display:flex; }
+
+    .modal-row { display:flex; gap:var(--gap-sm); width:100%; }
+    .mbtn {
+      flex:1; font-family:'Oswald',sans-serif; font-size:var(--t-md);
+      font-weight:700; letter-spacing:2px;
+      padding:clamp(10px,1.8vh,16px);
+      border:none; cursor:pointer; text-transform:uppercase;
+      min-height:clamp(44px,7vh,60px);
+    }
+    .mbtn-ok     { background:var(--accent); color:var(--black); }
+    .mbtn-cancel { background:var(--gray2); color:#777; border:2px solid var(--gray3); }
+    .mbtn:active { filter:brightness(0.82); }
+
+    /* ── NUMPAD TIME MODAL ── */
+    #time-modal-box {
+      background:var(--gray); border:clamp(3px,0.4vw,4px) solid var(--accent);
+      padding:clamp(12px,2vh,20px);
+      display:flex; flex-direction:column; align-items:center;
+      gap:clamp(8px,1.5vh,14px);
+      width:min(340px, 96vw);
+      max-height:96dvh; overflow-y:auto;
+    }
+    #time-modal-box h3 {
+      font-family:'Black Ops One',cursive; font-size:var(--t-md);
+      letter-spacing:4px; color:var(--accent); text-transform:uppercase; align-self:flex-start;
+    }
+    #np-display {
+      background:var(--black); border:clamp(2px,0.3vw,3px) solid var(--accent); width:100%;
+      padding:clamp(6px,1.2vh,12px) 14px;
+      display:flex; align-items:baseline; justify-content:center; gap:2px;
+    }
+    #np-min, #np-sec {
+      font-family:'Black Ops One',cursive;
+      font-size:clamp(2rem,8vw + 1vh,3.4rem);
+      color:var(--accent); letter-spacing:2px; line-height:1;
+    }
+    #np-colon {
+      font-family:'Black Ops One',cursive;
+      font-size:clamp(1.8rem,7vw,3rem); color:#555; margin:0 3px; line-height:1;
+    }
+    #np-hint {
+      font-family:'Oswald',sans-serif; font-size:var(--t-xs);
+      letter-spacing:2px; color:#444; text-transform:uppercase; align-self:flex-start;
+    }
+    .numpad { display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(5px,1vw,8px); width:100%; }
+    .np-btn {
+      font-family:'Black Ops One',cursive;
+      font-size:clamp(1.4rem,5vw,2rem);
+      background:var(--gray2); border:clamp(2px,0.3vw,3px) solid var(--gray3); color:var(--white);
+      padding:0; cursor:pointer; text-align:center; line-height:1;
+      min-height:clamp(52px,8vh,72px);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .np-btn:active { background:#3a3a3a; transform:scale(0.93); }
+    .np-btn.np-back  { background:#3a1a00; border-color:#663300; color:#FF8844; font-size:clamp(1.2rem,4vw,1.6rem); }
+    .np-btn.np-clear { background:#3a0000; border-color:#660000; color:#ff6666; font-size:var(--t-sm); font-family:'Oswald',sans-serif; font-weight:700; letter-spacing:1px; }
+
+    /* ── EDIT LAST MATCH MODAL ── */
+    #edit-modal-box {
+      background:var(--gray); border:clamp(3px,0.4vw,4px) solid #FF8800;
+      padding:clamp(14px,2.5vh,24px) clamp(14px,3vw,26px);
+      display:flex; flex-direction:column; align-items:center;
+      gap:clamp(10px,1.8vh,16px);
+      width:min(420px, 96vw);
+      max-height:96dvh; overflow-y:auto;
+    }
+    #edit-modal-box h3 {
+      font-family:'Black Ops One',cursive; font-size:var(--t-md);
+      letter-spacing:3px; color:#FF8800; text-transform:uppercase;
+    }
+    #edit-modal-box > p {
+      font-family:'Oswald',sans-serif; font-size:var(--t-xs);
+      letter-spacing:2px; color:#666; text-transform:uppercase; text-align:center; line-height:1.5;
+    }
+    .edit-teams { display:grid; grid-template-columns:1fr 1fr; gap:clamp(8px,2vw,14px); width:100%; }
+    .edit-team-col { display:flex; flex-direction:column; gap:var(--gap-sm); align-items:center; }
+    .edit-team-label {
+      font-family:'Black Ops One',cursive; font-size:var(--t-sm);
+      letter-spacing:3px; padding:clamp(4px,0.8vh,8px) 0; width:100%; text-align:center;
+      clip-path:polygon(0 0,100% 0,94% 100%,6% 100%);
+    }
+    .etw { background:var(--white); color:var(--black); }
+    .etr { background:var(--red);   color:var(--white); }
+    .edit-field-group { width:100%; display:flex; flex-direction:column; gap:3px; }
+    .edit-field-lbl { font-family:'Oswald',sans-serif; font-size:var(--t-xs); letter-spacing:3px; color:#666; text-transform:uppercase; }
+    .edit-row { display:flex; align-items:stretch; border:2px solid var(--gray3); background:var(--black); }
+    .edit-row button {
+      font-family:'Black Ops One',cursive; font-size:clamp(1.2rem,4vw,1.6rem);
+      background:var(--gray2); border:none; color:var(--white);
+      padding:0 clamp(10px,2vw,16px); cursor:pointer;
+      min-height:clamp(44px,6vh,58px); min-width:clamp(36px,5vw,50px); line-height:1;
+    }
+    .edit-row button:active { filter:brightness(1.5); }
+    .edit-val {
+      font-family:'Black Ops One',cursive;
+      font-size:clamp(1.6rem,5vw,2.2rem);
+      color:var(--white); flex:1; text-align:center; line-height:1;
+      padding:clamp(4px,0.8vh,8px) 0;
+      display:flex; align-items:center; justify-content:center;
+    }
+
+    /* ── CONFIRM RESET MODAL ── */
+    #confirm-box {
+      background:var(--gray); border:clamp(3px,0.4vw,4px) solid var(--red-light);
+      padding:clamp(18px,3vh,28px) clamp(20px,4vw,34px);
+      display:flex; flex-direction:column; align-items:center;
+      gap:clamp(10px,1.8vh,16px); min-width:min(270px,90vw); text-align:center;
+    }
+    #confirm-box h3 { font-family:'Black Ops One',cursive; font-size:var(--t-md); letter-spacing:3px; color:var(--red-light); text-transform:uppercase; }
+    #confirm-box p  { font-family:'Oswald',sans-serif; font-size:var(--t-sm); letter-spacing:2px; color:#888; text-transform:uppercase; }
+
+    /* ── FLASH ── */
+    #flash { position:fixed; inset:0; pointer-events:none; z-index:99; opacity:0; transition:opacity 0.07s; }
+    #flash.rf { background:var(--red); opacity:0.18; }
+    #flash.wf { background:#fff;       opacity:0.13; }
+
+    /* ════════════════════════════════════════
+       BREAKPOINT TWEAKS
+    ════════════════════════════════════════ */
+
+    /* Very small phones — tighten further */
+    @media (max-width:380px) {
+      :root {
+        --t-2xl: clamp(2rem, 14vw + 0.5vh, 5rem);
+      }
+      .team-banner { letter-spacing:2px; }
+    }
+
+    /* Tall portrait phones — give scores more room */
+    @media (orientation:portrait) and (min-height:700px) {
+      :root { --tap: clamp(48px, 7vh, 80px); }
+    }
+
+    /* Large desktop / widescreen */
+    @media (min-width:1400px) {
+      :root {
+        --t-2xl: clamp(4rem, 8vw + 1vh, 9rem);
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -743,7 +790,6 @@ function buzzer(){
   beepBuzzer();
 }
 function beepBuzzer(){
-  // Basketball-style buzzer: loud, flat, sustained honk — no external files needed.
   try {
     const c = ctx();
     const t = c.currentTime;
@@ -753,7 +799,6 @@ function beepBuzzer(){
     const gain   = c.createGain();
     const shaper = c.createWaveShaper();
 
-    // Overdrive curve — gives the honk its harsh edge
     const curve = new Float32Array(256);
     for (let i = 0; i < 256; i++) {
       const x = (i * 2) / 256 - 1;
@@ -770,7 +815,6 @@ function beepBuzzer(){
     osc.frequency.setValueAtTime(130, t);
     osc.frequency.linearRampToValueAtTime(118, t + dur);
 
-    // Hard attack → full sustain → sharp cutoff
     gain.gain.setValueAtTime(0, t);
     gain.gain.linearRampToValueAtTime(0.9, t + 0.04);
     gain.gain.setValueAtTime(0.9, t + dur - 0.08);
@@ -781,7 +825,7 @@ function beepBuzzer(){
   } catch(e) {}
 }
 
-// ── MODE ────────────────────────────────────────────────────────────
+// ── MODE ───────────────────────────────────────────────────────────
 function setMode(m) {
   mode=m;
   document.getElementById('btn-team').classList.toggle('active',m==='team');
@@ -793,7 +837,7 @@ function setMode(m) {
   doResetAll(true);
 }
 
-// ── SCORING ─────────────────────────────────────────────────────────
+// ── SCORING ────────────────────────────────────────────────────────
 function addPt(t) {
   scores[t].m++;
   if(mode==='team') scores[t].c++;
@@ -815,7 +859,7 @@ function render() {
   document.getElementById('red-cum-pts').textContent   = scores.red.c;
 }
 
-// ── NEXT MATCH ──────────────────────────────────────────────────────
+// ── NEXT MATCH ─────────────────────────────────────────────────────
 function nextMatch() {
   ctx();
   const curMatchVal = parseInt(document.getElementById('match-num-input').value)||1;
@@ -836,7 +880,7 @@ function nextMatch() {
   beep(500,0.12,0.45);
 }
 
-// ── EDIT LAST MATCH ─────────────────────────────────────────────────
+// ── EDIT LAST MATCH ────────────────────────────────────────────────
 function openEditModal() {
   if (!lastMatchSnap) return;
   editDraft = { white:{...lastMatchSnap.white}, red:{...lastMatchSnap.red} };
@@ -883,7 +927,7 @@ function applyEdit() {
   beep(660,0.15,0.5);
 }
 
-// ── RESET ────────────────────────────────────────────────────────────
+// ── RESET ───────────────────────────────────────────────────────────
 function openConfirm()  { document.getElementById('confirm-modal').classList.add('show'); }
 function closeConfirm() { document.getElementById('confirm-modal').classList.remove('show'); }
 function doResetAll(silent) {
@@ -898,7 +942,7 @@ function doResetAll(silent) {
   render(); resetTimer();
 }
 
-// ── TIMER ────────────────────────────────────────────────────────────
+// ── TIMER ───────────────────────────────────────────────────────────
 function setPreset(s,btn) {
   selTime=s;timeLeft=s;
   document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('sel'));
@@ -937,7 +981,7 @@ function updateClock(){
   else if(timeLeft<=15)       el.classList.add('warning');
 }
 
-// ── NUMPAD TIME MODAL ─────────────────────────────────────────────
+// ── NUMPAD TIME MODAL ────────────────────────────────────────────
 let npDigits = [];
 function openTimeModal(){
   if(running) return;
@@ -992,14 +1036,14 @@ function applyTime(){
   });
 });
 
-// ── FLASH ────────────────────────────────────────────────────────────
+// ── FLASH ───────────────────────────────────────────────────────────
 function flash(t){
   const f=document.getElementById('flash');
   f.className=t==='red'?'rf':'wf';
   setTimeout(()=>f.className='',170);
 }
 
-// ── INIT ─────────────────────────────────────────────────────────────
+// ── INIT ────────────────────────────────────────────────────────────
 function init(){
   loadBuzzer();
   setMode('team');
