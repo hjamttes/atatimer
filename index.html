@@ -248,15 +248,21 @@
   }
   .score-num {
     font-family:'Black Ops One',cursive;
-    font-size:var(--t-2xl);
+    /* Scale off panel width (vw) AND available height (vh).
+       In team mode two blocks share vertical space so we stay moderate.
+       In individual mode the block is taller so the number grows naturally. */
+    font-size:clamp(2.5rem, 9vw + 4vh, 10rem);
     line-height:1; flex:1;
     display:flex; align-items:center; justify-content:center; min-height:0;
+    /* Never overflow the block */
+    max-width:100%; overflow:hidden;
   }
   .cum-num {
     font-family:'Black Ops One',cursive;
-    font-size:var(--t-2xl);
+    font-size:clamp(2.5rem, 9vw + 4vh, 10rem);
     line-height:1; flex:1;
     display:flex; align-items:center; justify-content:center; min-height:0;
+    max-width:100%; overflow:hidden;
   }
   .wn { color:var(--white); }
   .rn { color:var(--red-light); }
@@ -305,9 +311,13 @@
   }
   #timer-text {
     font-family:'Black Ops One',cursive;
-    font-size:clamp(2rem, 6vw + 2vh, 5rem);
-    color:var(--accent); letter-spacing:clamp(2px,0.5vw,5px);
+    /* Use vw-dominant scaling so it always fits the narrow center column.
+       4vw covers the "2:00" string (~4 chars) inside ~22vw column. */
+    font-size:clamp(1.6rem, 4.2vw + 1vh, 4rem);
+    color:var(--accent); letter-spacing:clamp(1px,0.3vw,4px);
     line-height:1; display:block; transition:color 0.25s;
+    /* Hard stop — never overflow the timer box */
+    white-space:nowrap; overflow:hidden;
   }
   #timer-text.warning { color:#FF8800; }
   #timer-text.danger  { color:var(--red-light); animation:blink 0.45s infinite; }
@@ -730,26 +740,44 @@ function buzzer(){
   if(buzzerAudio){try{buzzerAudio.currentTime=0;buzzerAudio.play().catch(beepBuzzer);return;}catch(e){}}
   beepBuzzer();
 }
-function beepBuzzer() {
-  const duration = 2.0; // longer blast like real buzzer
+function beepBuzzer(){
+  // Basketball-style buzzer: loud, flat, sustained honk — no external files needed.
+  try {
+    const c = ctx();
+    const t = c.currentTime;
+    const dur = 1.8;
 
-  // Base tone (harsh square wave works better than sawtooth)
-  beep(1000, duration, 0.9, 'square');
+    const osc    = c.createOscillator();
+    const gain   = c.createGain();
+    const shaper = c.createWaveShaper();
 
-  // Add a slight detuned layer for that "raspy" buzzer feel
-  setTimeout(() => beep(1020, duration, 0.6, 'square'), 0);
+    // Overdrive curve — gives the honk its harsh edge
+    const curve = new Float32Array(256);
+    for (let i = 0; i < 256; i++) {
+      const x = (i * 2) / 256 - 1;
+      curve[i] = (Math.PI + 300) * x / (Math.PI + 300 * Math.abs(x));
+    }
+    shaper.curve = curve;
+    shaper.oversample = '4x';
 
-  // Optional: subtle low-frequency wobble (simulates cheap arena buzzer)
-  let t = 0;
-  const interval = setInterval(() => {
-    const freq = 1000 + Math.sin(t) * 20; // tiny vibrato
-    beep(freq, 0.1, 0.4, 'square');
-    t += 0.5;
-  }, 100);
+    osc.connect(shaper);
+    shaper.connect(gain);
+    gain.connect(c.destination);
 
-  setTimeout(() => clearInterval(interval), duration * 1000);
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(130, t);
+    osc.frequency.linearRampToValueAtTime(118, t + dur);
+
+    // Hard attack → full sustain → sharp cutoff
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(0.9, t + 0.04);
+    gain.gain.setValueAtTime(0.9, t + dur - 0.08);
+    gain.gain.linearRampToValueAtTime(0, t + dur);
+
+    osc.start(t);
+    osc.stop(t + dur + 0.05);
+  } catch(e) {}
 }
-
 
 // ── MODE ────────────────────────────────────────────────────────────
 function setMode(m) {
@@ -776,7 +804,7 @@ function subPt(t) {
     if(mode==='team') scores[t].c=Math.max(0,scores[t].c-1);
   }
   render();
-  beep(160,0.1,0.3,'sine');
+  beep(t==='red'?580:920,0.12,0.5);
 }
 function render() {
   document.getElementById('white-pts').textContent     = scores.white.m;
