@@ -248,21 +248,23 @@
   }
   .score-num {
     font-family:'Black Ops One',cursive;
-    /* Scale off panel width (vw) AND available height (vh).
-       In team mode two blocks share vertical space so we stay moderate.
-       In individual mode the block is taller so the number grows naturally. */
-    font-size:clamp(2.5rem, 9vw + 4vh, 10rem);
+    font-size:clamp(2.5rem, 7vw + 1.5vh, 7rem);
     line-height:1; flex:1;
     display:flex; align-items:center; justify-content:center; min-height:0;
-    /* Never overflow the block */
     max-width:100%; overflow:hidden;
   }
   .cum-num {
     font-family:'Black Ops One',cursive;
-    font-size:clamp(2.5rem, 9vw + 4vh, 10rem);
+    font-size:clamp(2.5rem, 7vw + 1.5vh, 7rem);
     line-height:1; flex:1;
     display:flex; align-items:center; justify-content:center; min-height:0;
     max-width:100%; overflow:hidden;
+  }
+  /* Individual mode: cum-block is hidden so score-block fills full height —
+     use that extra room to grow the number significantly */
+  .cum-block.hidden ~ * .score-num,
+  .team-body:has(.cum-block.hidden) .score-num {
+    font-size:clamp(4rem, 9vw + 6vh, 14rem);
   }
   .wn { color:var(--white); }
   .rn { color:var(--red-light); }
